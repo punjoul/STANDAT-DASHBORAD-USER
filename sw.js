@@ -1,11 +1,14 @@
-const CACHE_NAME = 'standat-cache-v4';
+const CACHE_NAME = 'standat-cache-v5';
 const urlsToCache = [
   './',
   './index.html',
   './manifest.json',
   './logo.png',
   './icon-192x192.png',
-  './icon-512x512.png'
+  './icon-512x512.png',
+  './LOGO_HOME.png',
+  './LOGO_WIN.png',
+  './LOGO_DOLLAR.png'
 ];
 
 self.addEventListener('install', event => {
