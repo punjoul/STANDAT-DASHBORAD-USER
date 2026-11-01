@@ -1,4 +1,4 @@
-const CACHE_NAME = 'standat-cache-v3';
+const CACHE_NAME = 'standat-cache-v4';
 const urlsToCache = [
   './',
   './index.html',
