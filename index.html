@@ -23,6 +23,7 @@
       <img src="logo.png" alt="Standat Lottery Logo" class="h-20 object-contain">
     </div>
 
+    <!-- VIEW 1: LOGIN -->
     <div id="view-login">
       <form id="form-login" class="space-y-4">
         <input type="text" id="login-user" placeholder="User Name" class="input-field" required>
@@ -36,6 +37,7 @@
       <button onclick="switchView('view-register')" class="btn-blue">REGISTER</button>
     </div>
 
+    <!-- VIEW 2: REGISTER -->
     <div id="view-register" class="hidden-view">
       <form id="form-register" class="space-y-2">
         <input type="text" id="reg-name" placeholder="Name" class="input-field" required>
@@ -69,6 +71,7 @@
       </form>
     </div>
 
+    <!-- VIEW 3: THANK YOU -->
     <div id="view-thankyou" class="hidden-view text-center mt-10">
       <h3 class="text-2xl font-bold text-[#0284c7] mb-6">THANK YOU FOR REGISTER</h3>
       <p class="text-gray-800 italic mb-10 text-lg">
@@ -77,6 +80,7 @@
       <button onclick="switchView('view-login')" class="btn-blue">NEXT</button>
     </div>
 
+    <!-- VIEW 4: PLEASE WAIT -->
     <div id="view-wait" class="hidden-view text-center mt-10">
       <h3 class="text-xl font-bold text-[#0284c7] mb-6">PLEASE WAIT</h3>
       <p class="text-gray-800 italic mb-10 text-lg">
@@ -85,6 +89,7 @@
       <button onclick="switchView('view-login')" class="btn-blue">OK</button>
     </div>
 
+    <!-- VIEW 5: WELCOME TOP UP -->
     <div id="view-welcome" class="hidden-view text-center mt-10">
       <h3 class="text-xl font-bold text-[#0284c7] mb-6">WELCOME</h3>
       <p class="text-gray-800 italic mb-10 text-lg">
@@ -93,28 +98,53 @@
       <button onclick="switchView('view-dashboard')" class="btn-blue">OK</button>
     </div>
 
-    <div id="view-dashboard" class="hidden-view">
+    <!-- VIEW 6: DASHBOARD -->
+    <div id="view-dashboard" class="hidden-view relative">
+      
+      <!-- Tombol LOGOUT -->
+      <div class="flex justify-end mb-4">
+        <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-4 rounded-full text-xs shadow transition">LOGOUT</button>
+      </div>
+
       <div class="bg-white/30 p-4 rounded-lg mb-6 text-gray-800 font-semibold space-y-2">
         <div class="grid grid-cols-3"><span class="col-span-1">Name</span><span class="col-span-2">| : <span id="dash-name"></span></span></div>
         <div class="grid grid-cols-3"><span class="col-span-1">Status</span><span class="col-span-2">| : <span id="dash-status"></span></span></div>
         <div class="grid grid-cols-3"><span class="col-span-1">Balance</span><span class="col-span-2">| : <span class="text-2xl font-bold text-[#0284c7]">$0.00</span></span></div>
         <div class="grid grid-cols-3"><span class="col-span-1">Level</span><span class="col-span-2">| : <span id="dash-level"></span></span></div>
       </div>
+      
       <button class="bg-[#0284c7] text-white rounded-full w-full py-8 text-3xl font-black italic shadow-lg mb-6 transition transform hover:scale-105">Play!<br>WIN</button>
-      <div class="text-center text-sm text-gray-800 font-semibold" id="dash-time"></div>
+      <div class="text-center text-sm text-gray-800 font-semibold mb-8" id="dash-time"></div>
+
+      <!-- Navigasi Bawah (3 Icon) -->
+      <div class="flex justify-between items-center px-4 mt-4">
+        <!-- LOGO HOME -->
+        <img src="LOGO_HOME.png" alt="Home" onclick="switchView('view-dashboard')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
+        <!-- LOGO WIN -->
+        <img src="LOGO_WIN.png" alt="Win" onclick="alert('Halaman Win sedang dalam pengembangan')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
+        <!-- LOGO DOLLAR -->
+        <img src="LOGO_DOLLAR.png" alt="Dollar" onclick="alert('Halaman Saldo sedang dalam pengembangan')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
+      </div>
     </div>
 
-    <div class="text-center text-xs text-gray-700 mt-12 w-full">
+    <!-- Footer Credit -->
+    <div class="text-center text-xs text-gray-700 mt-10 w-full">
       This application was created by Mr. Punjul under the company STANDAT
     </div>
   </div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbx17A57khXP7ubD4xBlXoZ-EN1Wi2hUX5pVBxWu7tY25CQ6z_BXXLpgXOLk3hHM-UAnWw/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbyA5RksfizeguRPAQTO81P6shZnM8w6NHIcIGvRyJ6njjeXBGEuMXS-GRm_4qwLZPhEZA/exec";
 
     function switchView(viewId) {
       document.querySelectorAll('div[id^="view-"]').forEach(el => el.classList.add('hidden-view'));
       document.getElementById(viewId).classList.remove('hidden-view');
+    }
+
+    // Fungsi Logout
+    function logout() {
+      document.getElementById('form-login').reset();
+      switchView('view-login');
     }
 
     setInterval(() => {
@@ -162,11 +192,10 @@
         if (data.status === 'success') {
           switchView('view-thankyou');
         } else {
-          // Akan memunculkan peringatan jika ada kerusakan di Google Sheets
           alert("Gagal. Detail error dari database: " + data.message);
         }
       } catch (err) {
-        alert("Koneksi ditolak server (CORS). Pastikan Anda telah melakukan Deploy > New Version di Apps Script dan akses diatur ke 'Siapa Saja / Anyone'.");
+        alert("Koneksi ditolak server (CORS).");
       } finally {
         submitBtn.innerText = "REGISTER";
         e.target.reset();
