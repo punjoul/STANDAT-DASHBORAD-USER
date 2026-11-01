@@ -1,0 +1,21 @@
+{
+  "name": "STANDAT Lottery",
+  "short_name": "Standat",
+  "description": "STANDAT Lottery Player App",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#93c5fd",
+  "theme_color": "#93c5fd",
+  "icons": [
+    {
+      "src": "./icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
