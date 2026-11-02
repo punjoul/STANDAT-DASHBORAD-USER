@@ -13,6 +13,9 @@
     .btn-blue:hover { background-color: #0284c7; }
     .input-field { width: 100%; padding: 0.5rem; border-radius: 0.25rem; border: none; margin-bottom: 0.75rem; }
     .hidden-view { display: none; }
+    /* Tambahan warna status */
+    .status-inactive { color: #dc2626; font-weight: bold; } /* text-red-600 */
+    .status-active { color: #16a34a; font-weight: bold; }   /* text-green-600 */
   </style>
 </head>
 <body class="flex items-center justify-center min-h-screen">
@@ -107,24 +110,31 @@
       </div>
 
       <div class="bg-white/30 p-4 rounded-lg mb-6 text-gray-800 font-semibold space-y-2">
+        <div class="grid grid-cols-3"><span class="col-span-1">Player ID</span><span class="col-span-2">| : <span id="dash-id"></span></span></div>
         <div class="grid grid-cols-3"><span class="col-span-1">Name</span><span class="col-span-2">| : <span id="dash-name"></span></span></div>
         <div class="grid grid-cols-3"><span class="col-span-1">Status</span><span class="col-span-2">| : <span id="dash-status"></span></span></div>
         <div class="grid grid-cols-3"><span class="col-span-1">Balance</span><span class="col-span-2">| : <span id="dash-balance" class="text-2xl font-bold text-[#0284c7]">$0.00</span></span></div>
         <div class="grid grid-cols-3"><span class="col-span-1">Level</span><span class="col-span-2">| : <span id="dash-level"></span></span></div>
       </div>
       
-      <button class="bg-[#0284c7] text-white rounded-full w-full py-8 text-3xl font-black italic shadow-lg mb-6 transition transform hover:scale-105">Play!<br>WIN</button>
+      <button id="btn-play" onclick="handlePlayButton()" class="bg-[#0284c7] text-white rounded-full w-full py-8 text-3xl font-black italic shadow-lg mb-6 transition transform hover:scale-105">Play!<br>WIN</button>
       <div class="text-center text-sm text-gray-800 font-semibold mb-8" id="dash-time"></div>
 
       <!-- Navigasi Bawah (3 Icon) -->
       <div class="flex justify-between items-center px-4 mt-4">
-        <!-- LOGO HOME -->
         <img src="LOGO_HOME.png" alt="Home" onclick="switchView('view-dashboard')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
-        <!-- LOGO WIN -->
         <img src="LOGO_WIN.png" alt="Win" onclick="alert('Halaman Win sedang dalam pengembangan')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
-        <!-- LOGO DOLLAR -->
         <img src="LOGO_DOLLAR.png" alt="Dollar" onclick="alert('Halaman Saldo sedang dalam pengembangan')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
       </div>
+    </div>
+
+    <!-- VIEW 7: PLAY (Sementrara) -->
+    <div id="view-play" class="hidden-view text-center mt-10">
+      <h3 class="text-xl font-bold text-[#0284c7] mb-6">PLAY! WIN</h3>
+      <p class="text-gray-800 italic mb-10 text-lg">
+        This page is currently<br>under development.
+      </p>
+      <button onclick="switchView('view-dashboard')" class="btn-blue">BACK TO DASHBOARD</button>
     </div>
 
     <!-- Footer Credit -->
@@ -134,18 +144,29 @@
   </div>
 
   <script>
-    // Ganti API URL dengan URL terbaru hasil redeploy Apps Script jika diperlukan
+    // Ganti API URL dengan URL terbaru hasil redeploy Apps Script
     const API_URL = "https://script.google.com/macros/s/AKfycbx17A57khXP7ubD4xBlXoZ-EN1Wi2hUX5pVBxWu7tY25CQ6z_BXXLpgXOLk3hHM-UAnWw/exec";
+    
+    // Variabel global untuk menyimpan status player saat ini
+    let currentPlayerStatus = "";
 
     function switchView(viewId) {
       document.querySelectorAll('div[id^="view-"]').forEach(el => el.classList.add('hidden-view'));
       document.getElementById(viewId).classList.remove('hidden-view');
     }
 
-    // Fungsi Logout
     function logout() {
+      currentPlayerStatus = "";
       document.getElementById('form-login').reset();
       switchView('view-login');
+    }
+    
+    function handlePlayButton() {
+      if (currentPlayerStatus === 'Inactive') {
+        alert("Please Top up your account to Play");
+      } else if (currentPlayerStatus === 'Active') {
+        switchView('view-play');
+      }
     }
 
     setInterval(() => {
@@ -183,8 +204,7 @@
 
       try {
         const res = await fetch(API_URL, {
-          method: 'POST',
-          body: formData,
+          method: 'POST', body: formData,
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           redirect: 'follow'
         });
@@ -216,27 +236,36 @@
 
       try {
         const res = await fetch(API_URL, {
-          method: 'POST',
-          body: formData,
+          method: 'POST', body: formData,
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           redirect: 'follow'
         });
         const data = await res.json();
 
         if (data.status === 'success') {
-          // Menyematkan Data Player dan Balance ke Dashboard UI
+          currentPlayerStatus = data.player_status;
+          
+          document.getElementById('dash-id').innerText = data.id_player;
           document.getElementById('dash-name').innerText = data.name;
-          document.getElementById('dash-status').innerText = data.player_status;
           document.getElementById('dash-level').innerText = data.level;
-          document.getElementById('dash-balance').innerText = "$" + data.balance; // Balance ter-update dari server
+          document.getElementById('dash-balance').innerText = "$" + data.balance; 
+          
+          // Logika pewarnaan status
+          const statusEl = document.getElementById('dash-status');
+          statusEl.innerText = data.player_status;
+          statusEl.className = ""; // reset class
+          if (data.player_status === 'Inactive') {
+             statusEl.classList.add("status-inactive");
+          } else if (data.player_status === 'Active') {
+             statusEl.classList.add("status-active");
+          }
 
           if (data.player_status === 'Registered') {
             switchView('view-wait');
           } else if (data.player_status === 'Inactive') {
-            switchView('view-welcome');
+            switchView('view-welcome'); // Jika inactive, tampilkan notif Top Up dulu
           } else {
-            // Asumsi jika statusnya 'Active' langsung masuk dashboard
-            switchView('view-dashboard');
+            switchView('view-dashboard'); // Jika active langsung ke dashboard
           }
         } else {
           alert("Error: " + data.message);
