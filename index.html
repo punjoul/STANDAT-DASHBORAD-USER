@@ -11,14 +11,15 @@
     body { background-color: #93c5fd; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     .btn-blue { background-color: #0ea5e9; color: white; border-radius: 9999px; padding: 0.5rem 2rem; font-weight: bold; width: 100%; transition: background-color 0.2s; }
     .btn-blue:hover { background-color: #0284c7; }
-    .input-field { width: 100%; padding: 0.5rem; border-radius: 0.25rem; border: none; margin-bottom: 0.75rem; }
-    .hidden-view { display: none; }
-    /* Tambahan warna status */
-    .status-inactive { color: #dc2626; font-weight: bold; } /* text-red-600 */
-    .status-active { color: #16a34a; font-weight: bold; }   /* text-green-600 */
+    .btn-disabled { background-color: #94a3b8; color: white; border-radius: 9999px; padding: 0.5rem 2rem; font-weight: bold; width: 100%; cursor: not-allowed; }
+    .input-field { width: 100%; padding: 0.5rem; border-radius: 0.25rem; border: none; margin-bottom: 0.75rem; color: #374151; font-weight: 600;}
+    .hidden-view { display: none !important; }
+    .status-inactive { color: #dc2626; font-weight: bold; }
+    .status-active { color: #16a34a; font-weight: bold; }
+    .play-grid-input { padding: 0.35rem; font-size: 0.875rem; text-align: center; border-radius: 0.25rem; border: none; font-weight: bold; color: #374151;}
   </style>
 </head>
-<body class="flex items-center justify-center min-h-screen">
+<body class="flex items-center justify-center min-h-screen relative">
 
   <div class="w-full max-w-sm p-6 relative">
     
@@ -103,8 +104,6 @@
 
     <!-- VIEW 6: DASHBOARD -->
     <div id="view-dashboard" class="hidden-view relative">
-      
-      <!-- Tombol LOGOUT -->
       <div class="flex justify-end mb-4">
         <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-4 rounded-full text-xs shadow transition">LOGOUT</button>
       </div>
@@ -117,10 +116,10 @@
         <div class="grid grid-cols-3"><span class="col-span-1">Level</span><span class="col-span-2">| : <span id="dash-level"></span></span></div>
       </div>
       
-      <button id="btn-play" onclick="handlePlayButton()" class="bg-[#0284c7] text-white rounded-full w-full py-8 text-3xl font-black italic shadow-lg mb-6 transition transform hover:scale-105">Play!<br>WIN</button>
-      <div class="text-center text-sm text-gray-800 font-semibold mb-8" id="dash-time"></div>
+      <button id="btn-play-dashboard" onclick="handlePlayButton()" class="bg-[#0284c7] text-white rounded-full w-full py-8 text-3xl font-black italic shadow-lg mb-6 transition transform hover:scale-105">Play!<br>WIN</button>
+      <div class="text-center text-sm text-gray-800 font-semibold mb-8 dash-time-display"></div>
 
-      <!-- Navigasi Bawah (3 Icon) -->
+      <!-- Navigasi Bawah -->
       <div class="flex justify-between items-center px-4 mt-4">
         <img src="LOGO_HOME.png" alt="Home" onclick="switchView('view-dashboard')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
         <img src="LOGO_WIN.png" alt="Win" onclick="alert('Halaman Win sedang dalam pengembangan')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
@@ -128,13 +127,39 @@
       </div>
     </div>
 
-    <!-- VIEW 7: PLAY (Sementrara) -->
-    <div id="view-play" class="hidden-view text-center mt-10">
-      <h3 class="text-xl font-bold text-[#0284c7] mb-6">PLAY! WIN</h3>
-      <p class="text-gray-800 italic mb-10 text-lg">
-        This page is currently<br>under development.
-      </p>
-      <button onclick="switchView('view-dashboard')" class="btn-blue">BACK TO DASHBOARD</button>
+    <!-- VIEW 7: PLAY! WIN -->
+    <div id="view-play" class="hidden-view relative">
+      <div class="flex justify-end mb-4">
+        <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-4 rounded-full text-xs shadow transition">LOGOUT</button>
+      </div>
+
+      <div class="bg-white/30 p-3 rounded-lg mb-4 text-gray-800 font-semibold text-sm space-y-1">
+        <div class="flex"><span class="w-24">Player ID</span><span>: <span id="play-id"></span></span></div>
+        <div class="flex"><span class="w-24">Balance</span><span>: <span id="play-balance" class="text-lg font-bold text-[#0284c7]">$0.00</span></span></div>
+        <div class="flex mt-2"><span class="w-24">Period Name</span><span>: <span id="play-period-name"></span></span></div>
+        <div class="flex"><span class="w-24">Period Date</span><span>: <span id="play-period-date"></span> | Period End: <span id="play-period-end"></span></span></div>
+      </div>
+
+      <!-- Form Grid 10 Baris -->
+      <div id="bet-container" class="space-y-2 mb-4">
+        <!-- JS will populate this -->
+      </div>
+      
+      <div class="flex justify-between items-center bg-white/40 p-2 rounded mb-4 text-gray-800 font-bold text-lg px-4">
+        <span>TOTAL</span>
+        <span id="play-total-amount">$0.00</span>
+      </div>
+
+      <button id="btn-submit-bet" onclick="showConfirmation()" class="btn-blue py-3 text-xl italic font-black shadow-lg mb-6">BET</button>
+      
+      <div class="text-center text-sm text-gray-800 font-semibold mb-8 dash-time-display"></div>
+
+      <!-- Navigasi Bawah -->
+      <div class="flex justify-between items-center px-4 mt-4">
+        <img src="LOGO_HOME.png" alt="Home" onclick="switchView('view-dashboard')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
+        <img src="LOGO_WIN.png" alt="Win" onclick="alert('Halaman Win sedang dalam pengembangan')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
+        <img src="LOGO_DOLLAR.png" alt="Dollar" onclick="alert('Halaman Saldo sedang dalam pengembangan')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
+      </div>
     </div>
 
     <!-- Footer Credit -->
@@ -143,12 +168,70 @@
     </div>
   </div>
 
+  <!-- MODAL: CONFIRMATION -->
+  <div id="modal-confirm" class="hidden fixed inset-0 bg-gray-600/90 z-50 flex items-center justify-center p-4">
+      <div class="bg-gray-300 w-full max-w-sm rounded p-6 text-center text-gray-800 font-semibold shadow-2xl">
+          <h2 class="text-lg mb-4">Your Bet</h2>
+          <div id="confirm-list" class="space-y-1 text-sm mb-4 max-h-48 overflow-y-auto px-4"></div>
+          <div class="font-bold text-lg mb-4 flex justify-between px-6"><span>TOTAL</span> <span id="confirm-total"></span></div>
+          <div class="mb-6">Are you sure?</div>
+          <div class="flex justify-center space-x-6">
+             <button onclick="closeConfirm()" class="bg-white px-6 py-2 rounded shadow transition hover:bg-gray-100">CANCEL</button>
+             <button onclick="processBet()" id="btn-process-bet" class="bg-white px-6 py-2 rounded shadow transition hover:bg-gray-100">OK</button>
+          </div>
+      </div>
+  </div>
+
+  <!-- MODAL: INVOICE -->
+  <div id="modal-invoice" class="hidden fixed inset-0 bg-gray-600/90 z-50 flex items-center justify-center p-4">
+      <div class="bg-[#93c5fd] w-full max-w-sm rounded p-6 text-center text-gray-800 font-semibold shadow-2xl relative">
+          <div class="text-3xl font-black text-[#0284c7] mb-4 italic leading-tight">//STANDAT.<br>L O T T E R Y</div>
+          <div class="text-xs text-left mb-4 bg-white/40 p-3 rounded space-y-1">
+              <div>Coupon ID: <span id="inv-coupon"></span></div>
+              <div>Period: <span id="inv-period"></span></div>
+              <div>Date-time: <span id="inv-datetime"></span></div>
+              <div>Player ID: <span id="inv-player"></span></div>
+          </div>
+          <div id="inv-list" class="space-y-1 text-sm mb-4 text-left px-2 max-h-40 overflow-y-auto"></div>
+          <div class="font-bold text-lg mb-6 flex justify-between px-4"><span>TOTAL</span> <span id="inv-total"></span></div>
+          <button onclick="closeInvoice()" class="bg-white px-10 py-2 rounded-full shadow text-[#0284c7] font-bold text-lg transition hover:bg-gray-100">OK</button>
+      </div>
+  </div>
+
   <script>
-    // Ganti API URL dengan URL terbaru hasil redeploy Apps Script
     const API_URL = "https://script.google.com/macros/s/AKfycbx17A57khXP7ubD4xBlXoZ-EN1Wi2hUX5pVBxWu7tY25CQ6z_BXXLpgXOLk3hHM-UAnWw/exec";
     
-    // Variabel global untuk menyimpan status player saat ini
-    let currentPlayerStatus = "";
+    let currentGlobalData = {
+       id_player: "", status: "", balance: 0.00, period_name: "", geo_location: ""
+    };
+    let pendingBets = [];
+    let pendingTotal = 0;
+
+    // Inisialisasi 10 Baris Input Taruhan
+    function initBetGrid() {
+      const container = document.getElementById('bet-container');
+      container.innerHTML = '';
+      for (let i = 1; i <= 10; i++) {
+        container.innerHTML += `
+          <div class="flex space-x-2">
+            <input type="text" id="bet-num-${i}" class="w-1/3 play-grid-input" placeholder="Number" oninput="validateNumber(this, ${i})">
+            <input type="text" id="bet-type-${i}" class="w-1/4 play-grid-input bg-white/40" placeholder="Type" readonly>
+            <input type="number" id="bet-amount-${i}" class="w-1/3 play-grid-input text-right" placeholder="$0.00" onchange="validateAmount(this)" step="0.25" min="0.25">
+          </div>
+        `;
+      }
+    }
+    initBetGrid();
+
+    // Jam Berjalan
+    setInterval(() => {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+      const dateStr = now.toLocaleDateString('en-GB', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+      document.querySelectorAll('.dash-time-display').forEach(el => {
+         el.innerHTML = `<span class="text-lg">${timeStr}</span><br>${dateStr}`;
+      });
+    }, 1000);
 
     function switchView(viewId) {
       document.querySelectorAll('div[id^="view-"]').forEach(el => el.classList.add('hidden-view'));
@@ -156,133 +239,272 @@
     }
 
     function logout() {
-      currentPlayerStatus = "";
+      currentGlobalData = { id_player: "", status: "", balance: 0.00, period_name: "", geo_location: "" };
       document.getElementById('form-login').reset();
       switchView('view-login');
     }
+
+    // Mengambil Geolokasi saat user klik Play
+    function fetchGeoLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          pos => { currentGlobalData.geo_location = `${pos.coords.latitude},${pos.coords.longitude}`; },
+          err => { console.warn("Geolocation denied/failed"); currentGlobalData.geo_location = "0,0"; }
+        );
+      }
+    }
     
-    function handlePlayButton() {
-      if (currentPlayerStatus === 'Inactive') {
+    // Logika pindah ke halaman Play! WIN
+    async function handlePlayButton() {
+      if (currentGlobalData.status === 'Inactive') {
         alert("Please Top up your account to Play");
-      } else if (currentPlayerStatus === 'Active') {
-        switchView('view-play');
+      } else if (currentGlobalData.status === 'Active') {
+        const btn = document.getElementById('btn-play-dashboard');
+        btn.innerText = "Loading...";
+        
+        fetchGeoLocation(); // Trigger pencarian lokasi
+
+        try {
+          const formData = new URLSearchParams();
+          formData.append('action', 'get_period');
+          
+          const res = await fetch(API_URL, { method: 'POST', body: formData });
+          const data = await res.json();
+          
+          document.getElementById('play-id').innerText = currentGlobalData.id_player;
+          document.getElementById('play-balance').innerText = "$" + currentGlobalData.balance.toFixed(2);
+          
+          const btnBet = document.getElementById('btn-submit-bet');
+          if (data.status === 'success' && data.period) {
+             document.getElementById('play-period-name').innerText = data.period.name;
+             document.getElementById('play-period-date').innerText = data.period.date;
+             document.getElementById('play-period-end').innerText = data.period.end;
+             currentGlobalData.period_name = data.period.name;
+             
+             btnBet.disabled = false;
+             btnBet.classList.remove('btn-disabled');
+             btnBet.classList.add('btn-blue');
+          } else {
+             document.getElementById('play-period-name').innerText = "";
+             document.getElementById('play-period-date').innerText = "";
+             document.getElementById('play-period-end').innerText = "";
+             currentGlobalData.period_name = "";
+             
+             btnBet.disabled = true;
+             btnBet.classList.add('btn-disabled');
+             btnBet.classList.remove('btn-blue');
+          }
+          
+          // Reset form input
+          for(let i=1; i<=10; i++) {
+             document.getElementById(`bet-num-${i}`).value = '';
+             document.getElementById(`bet-type-${i}`).value = '';
+             document.getElementById(`bet-amount-${i}`).value = '';
+          }
+          document.getElementById('play-total-amount').innerText = "$0.00";
+          switchView('view-play');
+
+        } catch (err) {
+          alert("Gagal memuat data Periode.");
+        } finally {
+          btn.innerHTML = "Play!<br>WIN";
+        }
       }
     }
 
-    setInterval(() => {
-      const now = new Date();
-      const options = { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' };
-      const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
-      const dateStr = now.toLocaleDateString('en-GB', options);
-      if(document.getElementById('dash-time')) {
-         document.getElementById('dash-time').innerHTML = `<span class="text-lg">${timeStr}</span><br>${dateStr}`;
-      }
-    }, 1000);
+    // Validasi Input Number (Maksimal 4 Digit dan Otomatisasi Tipe)
+    function validateNumber(input, index) {
+      let val = input.value.replace(/\D/g, ''); 
+      if (val.length > 4) val = val.substring(0, 4);
+      input.value = val;
+      
+      const typeInput = document.getElementById(`bet-type-${index}`);
+      if (val.length === 2) typeInput.value = '2D';
+      else if (val.length === 3) typeInput.value = '3D';
+      else if (val.length === 4) typeInput.value = '4D';
+      else typeInput.value = '';
+    }
 
-    // Registrasi
+    // Validasi Kelipatan $0.25
+    function validateAmount(input) {
+      let val = parseFloat(input.value);
+      if (isNaN(val) || val <= 0) {
+          input.value = '';
+      } else if (val % 0.25 !== 0) {
+          input.value = '';
+      } else {
+          input.value = val.toFixed(2);
+      }
+      calculateTotal();
+    }
+
+    function calculateTotal() {
+      let total = 0;
+      for (let i = 1; i <= 10; i++) {
+        let amt = parseFloat(document.getElementById(`bet-amount-${i}`).value);
+        if (!isNaN(amt)) total += amt;
+      }
+      document.getElementById('play-total-amount').innerText = "$" + total.toFixed(2);
+      return total;
+    }
+
+    // Tombol BET Ditekan -> Buka Modal
+    function showConfirmation() {
+      const total = calculateTotal();
+      if (total === 0) return alert("Please enter your bets.");
+      
+      if (total > currentGlobalData.balance) {
+         return alert("Sorry, your balance is insufficient for this transaction. Please deposit to continue the transaction.");
+      }
+
+      pendingBets = [];
+      let listHtml = '';
+      for(let i=1; i<=10; i++) {
+         const num = document.getElementById(`bet-num-${i}`).value;
+         const type = document.getElementById(`bet-type-${i}`).value;
+         const amtStr = document.getElementById(`bet-amount-${i}`).value;
+         
+         if (num && type && amtStr) {
+             const amt = parseFloat(amtStr);
+             let prize = 0;
+             if(type === '2D') prize = amt * 60;
+             if(type === '3D') prize = amt * 300;
+             if(type === '4D') prize = amt * 2500;
+             
+             pendingBets.push({number: num, type: type, amount: amt, prize: prize});
+             listHtml += `<div class="flex justify-between"><span>${num}</span> <span>${type}</span> <span>$${amt.toFixed(2)}</span></div>`;
+         }
+      }
+      
+      pendingTotal = total;
+      document.getElementById('confirm-list').innerHTML = listHtml;
+      document.getElementById('confirm-total').innerText = "$" + total.toFixed(2);
+      document.getElementById('modal-confirm').classList.remove('hidden');
+    }
+
+    function closeConfirm() { document.getElementById('modal-confirm').classList.add('hidden'); }
+
+    // Proses Simpan ke Database
+    async function processBet() {
+      const btnOk = document.getElementById('btn-process-bet');
+      btnOk.innerText = "Processing...";
+      btnOk.disabled = true;
+
+      const payloadObj = {
+         id_player: currentGlobalData.id_player,
+         period_name: currentGlobalData.period_name,
+         total_bet: pendingTotal,
+         geo_location: currentGlobalData.geo_location || "0,0",
+         bets: pendingBets
+      };
+
+      const formData = new URLSearchParams();
+      formData.append('action', 'submit_bet');
+      formData.append('payload', JSON.stringify(payloadObj));
+
+      try {
+        const res = await fetch(API_URL, { method: 'POST', body: formData });
+        const data = await res.json();
+        
+        if (data.status === 'success') {
+           // Kurangi saldo local secara visual
+           currentGlobalData.balance -= pendingTotal;
+           document.getElementById('dash-balance').innerText = "$" + currentGlobalData.balance.toFixed(2);
+           document.getElementById('play-balance').innerText = "$" + currentGlobalData.balance.toFixed(2);
+
+           // Tampilkan Invoice
+           document.getElementById('modal-confirm').classList.add('hidden');
+           document.getElementById('inv-coupon').innerText = data.id_coupon;
+           document.getElementById('inv-period').innerText = currentGlobalData.period_name;
+           document.getElementById('inv-datetime').innerText = data.date_time;
+           document.getElementById('inv-player').innerText = currentGlobalData.id_player;
+           
+           let invHtml = '';
+           pendingBets.forEach(b => {
+             invHtml += `<div class="flex justify-between border-b border-gray-400/30 pb-1"><span>${b.number}</span> <span>${b.type}</span> <span>$${b.amount.toFixed(2)}</span></div>`;
+           });
+           
+           document.getElementById('inv-list').innerHTML = invHtml;
+           document.getElementById('inv-total').innerText = "$" + pendingTotal.toFixed(2);
+           document.getElementById('modal-invoice').classList.remove('hidden');
+        } else {
+           alert("Transaction Failed: " + data.message);
+        }
+      } catch (err) {
+        alert("Server connection failed.");
+      } finally {
+        btnOk.innerText = "OK";
+        btnOk.disabled = false;
+      }
+    }
+
+    function closeInvoice() {
+       document.getElementById('modal-invoice').classList.add('hidden');
+       // Kosongkan form Play
+       for(let i=1; i<=10; i++) {
+          document.getElementById(`bet-num-${i}`).value = '';
+          document.getElementById(`bet-type-${i}`).value = '';
+          document.getElementById(`bet-amount-${i}`).value = '';
+       }
+       document.getElementById('play-total-amount').innerText = "$0.00";
+    }
+
+    // Login & Register Logic (Sama dengan sebelumnya dengan update currentGlobalData)
     document.getElementById('form-register').addEventListener('submit', async (e) => {
       e.preventDefault();
       const pass = document.getElementById('reg-pass').value;
-      const repeat = document.getElementById('reg-pass-repeat').value;
-      
-      if(pass !== repeat) return alert("Password tidak cocok!");
+      if(pass !== document.getElementById('reg-pass-repeat').value) return alert("Password tidak cocok!");
 
-      const submitBtn = e.target.querySelector('button');
-      submitBtn.innerText = "Loading...";
-
-      const formData = new URLSearchParams();
+      const btn = e.target.querySelector('button'); btn.innerText = "Loading...";
+      const formData = new URLSearchParams(new FormData(e.target));
       formData.append('action', 'register');
-      formData.append('name', document.getElementById('reg-name').value);
-      formData.append('pob', document.getElementById('reg-pob').value);
-      formData.append('dob', document.getElementById('reg-dob').value);
-      formData.append('id_card', document.getElementById('reg-idcard').value);
-      formData.append('address', document.getElementById('reg-address').value);
-      formData.append('city', document.getElementById('reg-city').value);
-      formData.append('phone', document.getElementById('reg-phone').value);
       formData.append('username', document.getElementById('reg-user').value);
       formData.append('password', pass);
 
       try {
-        const res = await fetch(API_URL, {
-          method: 'POST', body: formData,
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          redirect: 'follow'
-        });
-        
+        const res = await fetch(API_URL, { method: 'POST', body: formData });
         const data = await res.json();
-        if (data.status === 'success') {
-          switchView('view-thankyou');
-        } else {
-          alert("Gagal. Detail error dari database: " + data.message);
-        }
-      } catch (err) {
-        alert("Koneksi ditolak server (CORS).");
-      } finally {
-        submitBtn.innerText = "REGISTER";
-        e.target.reset();
-      }
+        if (data.status === 'success') switchView('view-thankyou');
+        else alert("Gagal: " + data.message);
+      } catch (err) { alert("CORS Error."); } 
+      finally { btn.innerText = "REGISTER"; e.target.reset(); }
     });
 
-    // Login
     document.getElementById('form-login').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const submitBtn = e.target.querySelector('button');
-      submitBtn.innerText = "Checking...";
-
+      const btn = e.target.querySelector('button'); btn.innerText = "Checking...";
       const formData = new URLSearchParams();
       formData.append('action', 'login');
       formData.append('username', document.getElementById('login-user').value);
       formData.append('password', document.getElementById('login-pass').value);
 
       try {
-        const res = await fetch(API_URL, {
-          method: 'POST', body: formData,
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          redirect: 'follow'
-        });
+        const res = await fetch(API_URL, { method: 'POST', body: formData });
         const data = await res.json();
 
         if (data.status === 'success') {
-          currentPlayerStatus = data.player_status;
+          currentGlobalData.id_player = data.id_player;
+          currentGlobalData.status = data.player_status;
+          currentGlobalData.balance = parseFloat(data.balance);
           
           document.getElementById('dash-id').innerText = data.id_player;
           document.getElementById('dash-name').innerText = data.name;
           document.getElementById('dash-level').innerText = data.level;
           document.getElementById('dash-balance').innerText = "$" + data.balance; 
           
-          // Logika pewarnaan status
           const statusEl = document.getElementById('dash-status');
           statusEl.innerText = data.player_status;
-          statusEl.className = ""; // reset class
-          if (data.player_status === 'Inactive') {
-             statusEl.classList.add("status-inactive");
-          } else if (data.player_status === 'Active') {
-             statusEl.classList.add("status-active");
-          }
+          statusEl.className = data.player_status === 'Inactive' ? "status-inactive" : (data.player_status === 'Active' ? "status-active" : "");
 
-          if (data.player_status === 'Registered') {
-            switchView('view-wait');
-          } else if (data.player_status === 'Inactive') {
-            switchView('view-welcome'); // Jika inactive, tampilkan notif Top Up dulu
-          } else {
-            switchView('view-dashboard'); // Jika active langsung ke dashboard
-          }
-        } else {
-          alert("Error: " + data.message);
-        }
-      } catch (err) {
-        alert("Gagal masuk. Koneksi diblokir server.");
-      } finally {
-        submitBtn.innerText = "SIGN IN";
-        e.target.reset();
-      }
+          if (data.player_status === 'Registered') switchView('view-wait');
+          else if (data.player_status === 'Inactive') switchView('view-welcome'); 
+          else switchView('view-dashboard'); 
+        } else alert("Error: " + data.message);
+      } catch (err) { alert("Server connection failed."); } 
+      finally { btn.innerText = "SIGN IN"; e.target.reset(); }
     });
 
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js');
-      });
-    }
+    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
   </script>
 </body>
 </html>
