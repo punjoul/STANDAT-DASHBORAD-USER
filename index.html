@@ -137,7 +137,7 @@
         <div class="flex"><span class="w-24">Player ID</span><span>: <span id="play-id"></span></span></div>
         <div class="flex"><span class="w-24">Balance</span><span>: <span id="play-balance" class="text-lg font-bold text-[#0284c7]">$0.00</span></span></div>
         <div class="flex mt-2"><span class="w-24">Period Name</span><span>: <span id="play-period-name"></span></span></div>
-        <!-- Period End sudah dihapus, hanya menyisakan Period Date -->
+        <!-- Hanya Period Date -->
         <div class="flex"><span class="w-24">Period Date</span><span>: <span id="play-period-date"></span></span></div>
       </div>
 
@@ -347,14 +347,28 @@
       return total;
     }
 
+    // PEMBARUAN: Logika Validasi Baris sebelum memunculkan popup
     function showConfirmation() {
+      // 1. Validasi Baris (Keduanya harus terisi atau keduanya kosong)
+      for(let i = 1; i <= 10; i++) {
+         const num = document.getElementById(`bet-num-${i}`).value.trim();
+         const amtStr = document.getElementById(`bet-amount-${i}`).value.trim();
+         
+         if ((num && !amtStr) || (!num && amtStr)) {
+             return alert(`Incomplete entry in row ${i}. Both Number and Amount must be filled together.`);
+         }
+      }
+
+      // 2. Kalkulasi Total
       const total = calculateTotal();
       if (total === 0) return alert("Please enter your bets.");
       
+      // 3. Validasi Saldo
       if (total > currentGlobalData.balance) {
          return alert("Sorry, your balance is insufficient for this transaction. Please deposit to continue the transaction.");
       }
 
+      // 4. Siapkan Data untuk Konfirmasi
       pendingBets = [];
       let listHtml = '';
       for(let i=1; i<=10; i++) {
