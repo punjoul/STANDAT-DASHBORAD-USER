@@ -137,7 +137,8 @@
         <div class="flex"><span class="w-24">Player ID</span><span>: <span id="play-id"></span></span></div>
         <div class="flex"><span class="w-24">Balance</span><span>: <span id="play-balance" class="text-lg font-bold text-[#0284c7]">$0.00</span></span></div>
         <div class="flex mt-2"><span class="w-24">Period Name</span><span>: <span id="play-period-name"></span></span></div>
-        <div class="flex"><span class="w-24">Period Date</span><span>: <span id="play-period-date"></span> | Period End: <span id="play-period-end"></span></span></div>
+        <!-- Period End sudah dihapus, hanya menyisakan Period Date -->
+        <div class="flex"><span class="w-24">Period Date</span><span>: <span id="play-period-date"></span></span></div>
       </div>
 
       <!-- Form Grid 10 Baris -->
@@ -199,7 +200,7 @@
   </div>
 
   <script>
-    // PASTIKAN API_URL INI SESUAI DENGAN DEPLOYMENT TERBARU ANDA
+    // PASTIKAN API_URL INI SAMA DENGAN DEPLOYMENT TERBARU ANDA
     const API_URL = "https://script.google.com/macros/s/AKfycbx17A57khXP7ubD4xBlXoZ-EN1Wi2hUX5pVBxWu7tY25CQ6z_BXXLpgXOLk3hHM-UAnWw/exec";
     
     let currentGlobalData = {
@@ -208,7 +209,6 @@
     let pendingBets = [];
     let pendingTotal = 0;
 
-    // Inisialisasi 10 Baris Input Taruhan
     function initBetGrid() {
       const container = document.getElementById('bet-container');
       container.innerHTML = '';
@@ -224,7 +224,6 @@
     }
     initBetGrid();
 
-    // Jam Berjalan
     setInterval(() => {
       const now = new Date();
       const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
@@ -245,7 +244,6 @@
       switchView('view-login');
     }
 
-    // Mengambil Geolokasi
     function fetchGeoLocation() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -255,7 +253,6 @@
       }
     }
     
-    // Logika pindah ke halaman Play! WIN
     async function handlePlayButton() {
       if (currentGlobalData.status === 'Inactive') {
         alert("Please Top up your account to Play");
@@ -269,7 +266,6 @@
           const formData = new URLSearchParams();
           formData.append('action', 'get_period');
           
-          // PERBAIKAN: Menambahkan redirect: 'follow'
           const res = await fetch(API_URL, { 
               method: 'POST', 
               body: formData,
@@ -284,7 +280,7 @@
           if (data.status === 'success' && data.period) {
              document.getElementById('play-period-name').innerText = data.period.name;
              document.getElementById('play-period-date').innerText = data.period.date;
-             document.getElementById('play-period-end').innerText = data.period.end;
+             
              currentGlobalData.period_name = data.period.name;
              
              btnBet.disabled = false;
@@ -293,7 +289,7 @@
           } else {
              document.getElementById('play-period-name').innerText = "";
              document.getElementById('play-period-date').innerText = "";
-             document.getElementById('play-period-end').innerText = "";
+             
              currentGlobalData.period_name = "";
              
              btnBet.disabled = true;
@@ -301,7 +297,6 @@
              btnBet.classList.remove('btn-blue');
           }
           
-          // Reset form input
           for(let i=1; i<=10; i++) {
              document.getElementById(`bet-num-${i}`).value = '';
              document.getElementById(`bet-type-${i}`).value = '';
@@ -318,7 +313,6 @@
       }
     }
 
-    // Validasi Input Number
     function validateNumber(input, index) {
       let val = input.value.replace(/\D/g, ''); 
       if (val.length > 4) val = val.substring(0, 4);
@@ -331,7 +325,6 @@
       else typeInput.value = '';
     }
 
-    // Validasi Kelipatan $0.25
     function validateAmount(input) {
       let val = parseFloat(input.value);
       if (isNaN(val) || val <= 0) {
@@ -344,7 +337,6 @@
       calculateTotal();
     }
 
-    // Hitung Total Taruhan
     function calculateTotal() {
       let total = 0;
       for (let i = 1; i <= 10; i++) {
@@ -355,7 +347,6 @@
       return total;
     }
 
-    // Tampilkan Modal Konfirmasi
     function showConfirmation() {
       const total = calculateTotal();
       if (total === 0) return alert("Please enter your bets.");
@@ -391,7 +382,6 @@
 
     function closeConfirm() { document.getElementById('modal-confirm').classList.add('hidden'); }
 
-    // Proses Submit Bet ke Database
     async function processBet() {
       const btnOk = document.getElementById('btn-process-bet');
       btnOk.innerText = "Processing...";
@@ -410,7 +400,6 @@
       formData.append('payload', JSON.stringify(payloadObj));
 
       try {
-        // PERBAIKAN: Menambahkan redirect: 'follow'
         const res = await fetch(API_URL, { 
             method: 'POST', 
             body: formData,
@@ -419,12 +408,10 @@
         const data = await res.json();
         
         if (data.status === 'success') {
-           // Kurangi saldo local secara visual
            currentGlobalData.balance -= pendingTotal;
            document.getElementById('dash-balance').innerText = "$" + currentGlobalData.balance.toFixed(2);
            document.getElementById('play-balance').innerText = "$" + currentGlobalData.balance.toFixed(2);
 
-           // Tampilkan Invoice
            document.getElementById('modal-confirm').classList.add('hidden');
            document.getElementById('inv-coupon').innerText = data.id_coupon;
            document.getElementById('inv-period').innerText = currentGlobalData.period_name;
@@ -452,7 +439,6 @@
 
     function closeInvoice() {
        document.getElementById('modal-invoice').classList.add('hidden');
-       // Kosongkan form Play
        for(let i=1; i<=10; i++) {
           document.getElementById(`bet-num-${i}`).value = '';
           document.getElementById(`bet-type-${i}`).value = '';
@@ -461,7 +447,6 @@
        document.getElementById('play-total-amount').innerText = "$0.00";
     }
 
-    // Register
     document.getElementById('form-register').addEventListener('submit', async (e) => {
       e.preventDefault();
       const pass = document.getElementById('reg-pass').value;
@@ -474,7 +459,6 @@
       formData.append('password', pass);
 
       try {
-        // PERBAIKAN: Menambahkan redirect: 'follow'
         const res = await fetch(API_URL, { method: 'POST', body: formData, redirect: 'follow' });
         const data = await res.json();
         if (data.status === 'success') switchView('view-thankyou');
@@ -483,7 +467,6 @@
       finally { btn.innerText = "REGISTER"; e.target.reset(); }
     });
 
-    // Login
     document.getElementById('form-login').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = e.target.querySelector('button'); btn.innerText = "Checking...";
@@ -493,7 +476,6 @@
       formData.append('password', document.getElementById('login-pass').value);
 
       try {
-        // PERBAIKAN: Menambahkan redirect: 'follow'
         const res = await fetch(API_URL, { method: 'POST', body: formData, redirect: 'follow' });
         const data = await res.json();
 
