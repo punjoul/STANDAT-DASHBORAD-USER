@@ -171,9 +171,9 @@
          Loading data...
       </div>
       
-      <!-- Tabel Hasil -->
-      <div id="win-table-container" class="bg-white/30 rounded-lg p-2 mb-4 hidden">
-        <table class="w-full table-fixed">
+      <!-- Tabel Hasil - Ditambahkan overflow-x-auto & min-w -->
+      <div id="win-table-container" class="bg-white/30 rounded-lg p-2 mb-4 hidden overflow-x-auto">
+        <table class="w-full min-w-[400px] whitespace-nowrap">
            <thead>
               <tr class="border-b border-gray-400/50">
                  <th class="win-table-header w-5/12">PERIOD NAME</th>
@@ -211,8 +211,9 @@
          Loading data...
       </div>
       
-      <div id="saldo-table-container" class="bg-white/30 rounded-lg p-2 mb-4 hidden">
-        <table class="w-full table-fixed">
+      <!-- PERBAIKAN: Ditambahkan overflow-x-auto pada container dan min-width pada tabel -->
+      <div id="saldo-table-container" class="bg-white/30 rounded-lg p-2 mb-4 hidden overflow-x-auto">
+        <table class="w-full min-w-[500px] whitespace-nowrap">
            <thead>
               <tr class="border-b border-gray-400/50">
                  <th class="saldo-table-header w-2/12">DATE</th>
@@ -293,7 +294,6 @@
     let currentWinPage = 1;
     let totalWinPages = 1;
     
-    // Variabel Pagination Halaman SALDO
     let currentSaldoPage = 1;
     let totalSaldoPages = 1;
 
@@ -491,7 +491,7 @@
           const formData = new URLSearchParams();
           formData.append('action', 'get_saldo_history');
           formData.append('page', page);
-          formData.append('id_player', currentGlobalData.id_player); // Kirim parameter user login
+          formData.append('id_player', currentGlobalData.id_player);
 
           const res = await fetch(API_URL, { method: 'POST', body: formData, redirect: 'follow' });
           const json = await res.json();
@@ -635,7 +635,7 @@
          bets: pendingBets
       };
 
-      const formData = newSearchParams();
+      const formData = new URLSearchParams();
       formData.append('action', 'submit_bet');
       formData.append('payload', JSON.stringify(payloadObj));
 
