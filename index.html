@@ -17,6 +17,9 @@
     .status-inactive { color: #dc2626; font-weight: bold; }
     .status-active { color: #16a34a; font-weight: bold; }
     .play-grid-input { padding: 0.35rem; font-size: 0.875rem; text-align: center; border-radius: 0.25rem; border: none; font-weight: bold; color: #374151;}
+    /* Tambahan Styling Khusus Halaman WIN */
+    .win-table-cell { padding: 0.75rem 0.25rem; text-align: center; font-size: 0.95rem; font-weight: 600; color: #374151; }
+    .win-table-header { padding: 0.5rem 0.25rem; text-align: center; font-size: 0.85rem; font-weight: bold; color: #1f2937; }
   </style>
 </head>
 <body class="flex items-center justify-center min-h-screen relative">
@@ -122,7 +125,7 @@
       <!-- Navigasi Bawah -->
       <div class="flex justify-between items-center px-4 mt-4">
         <img src="LOGO_HOME.png" alt="Home" onclick="switchView('view-dashboard')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
-        <img src="LOGO_WIN.png" alt="Win" onclick="alert('Halaman Win sedang dalam pengembangan')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
+        <img src="LOGO_WIN.png" alt="Win" onclick="handleWinResultsButton()" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
         <img src="LOGO_DOLLAR.png" alt="Dollar" onclick="alert('Halaman Saldo sedang dalam pengembangan')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
       </div>
     </div>
@@ -137,14 +140,11 @@
         <div class="flex"><span class="w-24">Player ID</span><span>: <span id="play-id"></span></span></div>
         <div class="flex"><span class="w-24">Balance</span><span>: <span id="play-balance" class="text-lg font-bold text-[#0284c7]">$0.00</span></span></div>
         <div class="flex mt-2"><span class="w-24">Period Name</span><span>: <span id="play-period-name"></span></span></div>
-        <!-- Hanya Period Date -->
         <div class="flex"><span class="w-24">Period Date</span><span>: <span id="play-period-date"></span></span></div>
       </div>
 
       <!-- Form Grid 10 Baris -->
-      <div id="bet-container" class="space-y-2 mb-4">
-        <!-- JS will populate this -->
-      </div>
+      <div id="bet-container" class="space-y-2 mb-4"></div>
       
       <div class="flex justify-between items-center bg-white/40 p-2 rounded mb-4 text-gray-800 font-bold text-lg px-4">
         <span>TOTAL</span>
@@ -158,7 +158,45 @@
       <!-- Navigasi Bawah -->
       <div class="flex justify-between items-center px-4 mt-4">
         <img src="LOGO_HOME.png" alt="Home" onclick="switchView('view-dashboard')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
-        <img src="LOGO_WIN.png" alt="Win" onclick="alert('Halaman Win sedang dalam pengembangan')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
+        <img src="LOGO_WIN.png" alt="Win" onclick="handleWinResultsButton()" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
+        <img src="LOGO_DOLLAR.png" alt="Dollar" onclick="alert('Halaman Saldo sedang dalam pengembangan')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
+      </div>
+    </div>
+
+    <!-- VIEW 8: WIN RESULTS (HALAMAN WIN) -->
+    <div id="view-win-results" class="hidden-view relative">
+      <div id="win-loading-indicator" class="text-center font-bold text-[#0284c7] my-8 hidden">
+         Loading data...
+      </div>
+      
+      <!-- Tabel Hasil -->
+      <div id="win-table-container" class="bg-white/30 rounded-lg p-2 mb-4 hidden">
+        <table class="w-full table-fixed">
+           <thead>
+              <tr class="border-b border-gray-400/50">
+                 <th class="win-table-header w-5/12">PERIOD NAME</th>
+                 <th class="win-table-header w-4/12">DATE</th>
+                 <th class="win-table-header w-3/12">RESULT</th>
+              </tr>
+           </thead>
+           <tbody id="win-table-body" class="divide-y divide-gray-400/20">
+              <!-- JS will populate -->
+           </tbody>
+        </table>
+      </div>
+
+      <!-- Tombol Pagination -->
+      <div class="flex justify-between items-center mb-6 px-1">
+         <button id="btn-prev-page" onclick="loadWinPage(currentWinPage - 1)" class="bg-[#0ea5e9] hover:bg-[#0284c7] text-white px-5 py-2 rounded-full font-bold shadow text-sm transition opacity-50 cursor-not-allowed">PREVIOUS</button>
+         <button id="btn-next-page" onclick="loadWinPage(currentWinPage + 1)" class="bg-[#0ea5e9] hover:bg-[#0284c7] text-white px-5 py-2 rounded-full font-bold shadow text-sm transition">NEXT</button>
+      </div>
+      
+      <div class="text-center text-sm text-gray-800 font-semibold mb-8 dash-time-display"></div>
+
+      <!-- Navigasi Bawah -->
+      <div class="flex justify-between items-center px-4 mt-4">
+        <img src="LOGO_HOME.png" alt="Home" onclick="switchView('view-dashboard')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
+        <img src="LOGO_WIN.png" alt="Win" onclick="handleWinResultsButton()" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
         <img src="LOGO_DOLLAR.png" alt="Dollar" onclick="alert('Halaman Saldo sedang dalam pengembangan')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
       </div>
     </div>
@@ -208,6 +246,10 @@
     };
     let pendingBets = [];
     let pendingTotal = 0;
+    
+    // Variabel Pagination Halaman WIN
+    let currentWinPage = 1;
+    let totalWinPages = 1;
 
     function initBetGrid() {
       const container = document.getElementById('bet-container');
@@ -253,6 +295,7 @@
       }
     }
     
+    // --- HALAMAN PLAY! WIN ---
     async function handlePlayButton() {
       if (currentGlobalData.status === 'Inactive') {
         alert("Please Top up your account to Play");
@@ -267,9 +310,7 @@
           formData.append('action', 'get_period');
           
           const res = await fetch(API_URL, { 
-              method: 'POST', 
-              body: formData,
-              redirect: 'follow' 
+              method: 'POST', body: formData, redirect: 'follow' 
           });
           const data = await res.json();
           
@@ -313,6 +354,83 @@
       }
     }
 
+    // --- HALAMAN WIN (RESULT) ---
+    function handleWinResultsButton() {
+       switchView('view-win-results');
+       currentWinPage = 1;
+       loadWinPage(currentWinPage);
+    }
+
+    async function loadWinPage(page) {
+       if(page < 1) return;
+       
+       document.getElementById('win-table-container').classList.add('hidden');
+       document.getElementById('win-loading-indicator').classList.remove('hidden');
+       
+       const btnPrev = document.getElementById('btn-prev-page');
+       const btnNext = document.getElementById('btn-next-page');
+       btnPrev.disabled = true; btnNext.disabled = true;
+
+       try {
+          const formData = new URLSearchParams();
+          formData.append('action', 'get_win_results');
+          formData.append('page', page);
+
+          const res = await fetch(API_URL, { method: 'POST', body: formData, redirect: 'follow' });
+          const json = await res.json();
+
+          if (json.status === 'success') {
+             currentWinPage = json.currentPage;
+             totalWinPages = json.totalPages;
+
+             const tbody = document.getElementById('win-table-body');
+             tbody.innerHTML = '';
+             
+             if (json.data && json.data.length > 0) {
+                 json.data.forEach(item => {
+                    tbody.innerHTML += `
+                       <tr>
+                          <td class="win-table-cell">${item.period_name}</td>
+                          <td class="win-table-cell">${item.period_date}</td>
+                          <td class="win-table-cell">${item.result}</td>
+                       </tr>
+                    `;
+                 });
+             } else {
+                 tbody.innerHTML = `<tr><td colspan="3" class="text-center py-6 italic text-gray-600">No results found</td></tr>`;
+             }
+             
+             document.getElementById('win-loading-indicator').classList.add('hidden');
+             document.getElementById('win-table-container').classList.remove('hidden');
+
+             // Atur status tombol pagination
+             if(currentWinPage <= 1) {
+                btnPrev.disabled = true;
+                btnPrev.classList.add('opacity-50', 'cursor-not-allowed');
+             } else {
+                btnPrev.disabled = false;
+                btnPrev.classList.remove('opacity-50', 'cursor-not-allowed');
+             }
+             
+             if(currentWinPage >= totalWinPages || totalWinPages === 0) {
+                btnNext.disabled = true;
+                btnNext.classList.add('opacity-50', 'cursor-not-allowed');
+             } else {
+                btnNext.disabled = false;
+                btnNext.classList.remove('opacity-50', 'cursor-not-allowed');
+             }
+
+          } else {
+             alert("Error loading results: " + json.message);
+             document.getElementById('win-loading-indicator').classList.add('hidden');
+          }
+       } catch(err) {
+          alert("Failed to fetch WIN results.");
+          document.getElementById('win-loading-indicator').classList.add('hidden');
+       }
+    }
+
+    // --- LOGIKA VALIDASI & TRANSAKSI BET ---
     function validateNumber(input, index) {
       let val = input.value.replace(/\D/g, ''); 
       if (val.length > 4) val = val.substring(0, 4);
@@ -347,9 +465,7 @@
       return total;
     }
 
-    // PEMBARUAN: Logika Validasi Baris sebelum memunculkan popup
     function showConfirmation() {
-      // 1. Validasi Baris (Keduanya harus terisi atau keduanya kosong)
       for(let i = 1; i <= 10; i++) {
          const num = document.getElementById(`bet-num-${i}`).value.trim();
          const amtStr = document.getElementById(`bet-amount-${i}`).value.trim();
@@ -359,16 +475,13 @@
          }
       }
 
-      // 2. Kalkulasi Total
       const total = calculateTotal();
       if (total === 0) return alert("Please enter your bets.");
       
-      // 3. Validasi Saldo
       if (total > currentGlobalData.balance) {
          return alert("Sorry, your balance is insufficient for this transaction. Please deposit to continue the transaction.");
       }
 
-      // 4. Siapkan Data untuk Konfirmasi
       pendingBets = [];
       let listHtml = '';
       for(let i=1; i<=10; i++) {
@@ -414,11 +527,7 @@
       formData.append('payload', JSON.stringify(payloadObj));
 
       try {
-        const res = await fetch(API_URL, { 
-            method: 'POST', 
-            body: formData,
-            redirect: 'follow'
-        });
+        const res = await fetch(API_URL, { method: 'POST', body: formData, redirect: 'follow' });
         const data = await res.json();
         
         if (data.status === 'success') {
@@ -461,6 +570,7 @@
        document.getElementById('play-total-amount').innerText = "$0.00";
     }
 
+    // --- FORM REGISTER & LOGIN ---
     document.getElementById('form-register').addEventListener('submit', async (e) => {
       e.preventDefault();
       const pass = document.getElementById('reg-pass').value;
