@@ -17,9 +17,11 @@
     .status-inactive { color: #dc2626; font-weight: bold; }
     .status-active { color: #16a34a; font-weight: bold; }
     .play-grid-input { padding: 0.35rem; font-size: 0.875rem; text-align: center; border-radius: 0.25rem; border: none; font-weight: bold; color: #374151;}
-    /* Tambahan Styling Khusus Halaman WIN */
     .win-table-cell { padding: 0.75rem 0.25rem; text-align: center; font-size: 0.95rem; font-weight: 600; color: #374151; }
     .win-table-header { padding: 0.5rem 0.25rem; text-align: center; font-size: 0.85rem; font-weight: bold; color: #1f2937; }
+    /* Styling Tabel Saldo History */
+    .saldo-table-cell { padding: 0.75rem 0.15rem; text-align: center; font-size: 0.85rem; font-weight: 600; color: #374151; }
+    .saldo-table-header { padding: 0.5rem 0.15rem; text-align: center; font-size: 0.75rem; font-weight: bold; color: #1f2937; }
   </style>
 </head>
 <body class="flex items-center justify-center min-h-screen relative">
@@ -126,7 +128,7 @@
       <div class="flex justify-between items-center px-4 mt-4">
         <img src="LOGO_HOME.png" alt="Home" onclick="switchView('view-dashboard')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
         <img src="LOGO_WIN.png" alt="Win" onclick="handleWinResultsButton()" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
-        <img src="LOGO_DOLLAR.png" alt="Dollar" onclick="alert('Halaman Saldo sedang dalam pengembangan')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
+        <img src="LOGO_DOLLAR.png" alt="Dollar" onclick="handleSaldoButton()" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
       </div>
     </div>
 
@@ -159,7 +161,7 @@
       <div class="flex justify-between items-center px-4 mt-4">
         <img src="LOGO_HOME.png" alt="Home" onclick="switchView('view-dashboard')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
         <img src="LOGO_WIN.png" alt="Win" onclick="handleWinResultsButton()" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
-        <img src="LOGO_DOLLAR.png" alt="Dollar" onclick="alert('Halaman Saldo sedang dalam pengembangan')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
+        <img src="LOGO_DOLLAR.png" alt="Dollar" onclick="handleSaldoButton()" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
       </div>
     </div>
 
@@ -197,7 +199,48 @@
       <div class="flex justify-between items-center px-4 mt-4">
         <img src="LOGO_HOME.png" alt="Home" onclick="switchView('view-dashboard')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
         <img src="LOGO_WIN.png" alt="Win" onclick="handleWinResultsButton()" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
-        <img src="LOGO_DOLLAR.png" alt="Dollar" onclick="alert('Halaman Saldo sedang dalam pengembangan')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
+        <img src="LOGO_DOLLAR.png" alt="Dollar" onclick="handleSaldoButton()" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
+      </div>
+    </div>
+    
+    <!-- VIEW 9: SALDO (HISTORY) -->
+    <div id="view-saldo" class="hidden-view relative">
+      <div class="font-bold text-gray-800 mb-2 uppercase text-sm">PLAYER ID : <span id="saldo-player-id"></span></div>
+      
+      <div id="saldo-loading-indicator" class="text-center font-bold text-[#0284c7] my-8 hidden">
+         Loading data...
+      </div>
+      
+      <div id="saldo-table-container" class="bg-white/30 rounded-lg p-2 mb-4 hidden">
+        <table class="w-full table-fixed">
+           <thead>
+              <tr class="border-b border-gray-400/50">
+                 <th class="saldo-table-header w-2/12">DATE</th>
+                 <th class="saldo-table-header w-2/12">BET</th>
+                 <th class="saldo-table-header w-3/12">AMOUNT</th>
+                 <th class="saldo-table-header w-2/12">STATUS</th>
+                 <th class="saldo-table-header w-3/12">PRIZE</th>
+              </tr>
+           </thead>
+           <tbody id="saldo-table-body" class="divide-y divide-gray-400/20">
+              <!-- JS will populate -->
+           </tbody>
+        </table>
+      </div>
+
+      <div class="flex justify-between items-center mb-6 px-1">
+         <button id="btn-prev-saldo" onclick="loadSaldoPage(currentSaldoPage - 1)" class="bg-[#0ea5e9] hover:bg-[#0284c7] text-white px-5 py-2 rounded-full font-bold shadow text-sm transition opacity-50 cursor-not-allowed">PREVIOUS</button>
+         <button id="btn-next-saldo" onclick="loadSaldoPage(currentSaldoPage + 1)" class="bg-[#0ea5e9] hover:bg-[#0284c7] text-white px-5 py-2 rounded-full font-bold shadow text-sm transition">NEXT</button>
+      </div>
+      
+      <div class="text-center text-sm text-gray-800 font-semibold mb-8 dash-time-display"></div>
+
+      <!-- Navigasi Bawah Khusus Saldo -->
+      <div class="flex justify-between items-center mt-4">
+        <img src="LOGO_HOME.png" alt="Home" onclick="switchView('view-dashboard')" class="w-20 h-20 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
+        <button onclick="alert('DEPOSIT/WITHDRAWAL sedang dalam pengembangan')" class="bg-[#0ea5e9] hover:bg-[#0284c7] text-white py-4 px-6 rounded-full font-black text-lg shadow-lg flex-1 ml-4 transition">
+            DEPOSIT/WITHDRAWAL
+        </button>
       </div>
     </div>
 
@@ -247,9 +290,12 @@
     let pendingBets = [];
     let pendingTotal = 0;
     
-    // Variabel Pagination Halaman WIN
     let currentWinPage = 1;
     let totalWinPages = 1;
+    
+    // Variabel Pagination Halaman SALDO
+    let currentSaldoPage = 1;
+    let totalSaldoPages = 1;
 
     function initBetGrid() {
       const container = document.getElementById('bet-container');
@@ -321,7 +367,6 @@
           if (data.status === 'success' && data.period) {
              document.getElementById('play-period-name').innerText = data.period.name;
              document.getElementById('play-period-date').innerText = data.period.date;
-             
              currentGlobalData.period_name = data.period.name;
              
              btnBet.disabled = false;
@@ -330,7 +375,6 @@
           } else {
              document.getElementById('play-period-name').innerText = "";
              document.getElementById('play-period-date').innerText = "";
-             
              currentGlobalData.period_name = "";
              
              btnBet.disabled = true;
@@ -403,23 +447,17 @@
              document.getElementById('win-loading-indicator').classList.add('hidden');
              document.getElementById('win-table-container').classList.remove('hidden');
 
-             // Atur status tombol pagination
              if(currentWinPage <= 1) {
-                btnPrev.disabled = true;
-                btnPrev.classList.add('opacity-50', 'cursor-not-allowed');
+                btnPrev.disabled = true; btnPrev.classList.add('opacity-50', 'cursor-not-allowed');
              } else {
-                btnPrev.disabled = false;
-                btnPrev.classList.remove('opacity-50', 'cursor-not-allowed');
+                btnPrev.disabled = false; btnPrev.classList.remove('opacity-50', 'cursor-not-allowed');
              }
              
              if(currentWinPage >= totalWinPages || totalWinPages === 0) {
-                btnNext.disabled = true;
-                btnNext.classList.add('opacity-50', 'cursor-not-allowed');
+                btnNext.disabled = true; btnNext.classList.add('opacity-50', 'cursor-not-allowed');
              } else {
-                btnNext.disabled = false;
-                btnNext.classList.remove('opacity-50', 'cursor-not-allowed');
+                btnNext.disabled = false; btnNext.classList.remove('opacity-50', 'cursor-not-allowed');
              }
-
           } else {
              alert("Error loading results: " + json.message);
              document.getElementById('win-loading-indicator').classList.add('hidden');
@@ -427,6 +465,81 @@
        } catch(err) {
           alert("Failed to fetch WIN results.");
           document.getElementById('win-loading-indicator').classList.add('hidden');
+       }
+    }
+
+    // --- HALAMAN SALDO (HISTORY) ---
+    function handleSaldoButton() {
+       if(!currentGlobalData.id_player) return alert("Please Login First");
+       document.getElementById('saldo-player-id').innerText = currentGlobalData.id_player;
+       switchView('view-saldo');
+       currentSaldoPage = 1;
+       loadSaldoPage(currentSaldoPage);
+    }
+    
+    async function loadSaldoPage(page) {
+       if(page < 1) return;
+       
+       document.getElementById('saldo-table-container').classList.add('hidden');
+       document.getElementById('saldo-loading-indicator').classList.remove('hidden');
+       
+       const btnPrev = document.getElementById('btn-prev-saldo');
+       const btnNext = document.getElementById('btn-next-saldo');
+       btnPrev.disabled = true; btnNext.disabled = true;
+
+       try {
+          const formData = new URLSearchParams();
+          formData.append('action', 'get_saldo_history');
+          formData.append('page', page);
+          formData.append('id_player', currentGlobalData.id_player); // Kirim parameter user login
+
+          const res = await fetch(API_URL, { method: 'POST', body: formData, redirect: 'follow' });
+          const json = await res.json();
+
+          if (json.status === 'success') {
+             currentSaldoPage = json.currentPage;
+             totalSaldoPages = json.totalPages;
+
+             const tbody = document.getElementById('saldo-table-body');
+             tbody.innerHTML = '';
+             
+             if (json.data && json.data.length > 0) {
+                 json.data.forEach(item => {
+                    tbody.innerHTML += `
+                       <tr>
+                          <td class="saldo-table-cell">${item.date}</td>
+                          <td class="saldo-table-cell">${item.bet}</td>
+                          <td class="saldo-table-cell">${item.amount}</td>
+                          <td class="saldo-table-cell">${item.status}</td>
+                          <td class="saldo-table-cell">${item.prize}</td>
+                       </tr>
+                    `;
+                 });
+             } else {
+                 tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 italic text-gray-600">No transaction history</td></tr>`;
+             }
+             
+             document.getElementById('saldo-loading-indicator').classList.add('hidden');
+             document.getElementById('saldo-table-container').classList.remove('hidden');
+
+             if(currentSaldoPage <= 1) {
+                btnPrev.disabled = true; btnPrev.classList.add('opacity-50', 'cursor-not-allowed');
+             } else {
+                btnPrev.disabled = false; btnPrev.classList.remove('opacity-50', 'cursor-not-allowed');
+             }
+             
+             if(currentSaldoPage >= totalSaldoPages || totalSaldoPages === 0) {
+                btnNext.disabled = true; btnNext.classList.add('opacity-50', 'cursor-not-allowed');
+             } else {
+                btnNext.disabled = false; btnNext.classList.remove('opacity-50', 'cursor-not-allowed');
+             }
+          } else {
+             alert("Error loading history: " + json.message);
+             document.getElementById('saldo-loading-indicator').classList.add('hidden');
+          }
+       } catch(err) {
+          alert("Failed to fetch SALDO history.");
+          document.getElementById('saldo-loading-indicator').classList.add('hidden');
        }
     }
 
@@ -522,7 +635,7 @@
          bets: pendingBets
       };
 
-      const formData = new URLSearchParams();
+      const formData = newSearchParams();
       formData.append('action', 'submit_bet');
       formData.append('payload', JSON.stringify(payloadObj));
 
