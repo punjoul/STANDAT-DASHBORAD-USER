@@ -13,13 +13,13 @@
     .btn-blue:hover { background-color: #0284c7; }
     .btn-disabled { background-color: #94a3b8; color: white; border-radius: 9999px; padding: 0.5rem 2rem; font-weight: bold; width: 100%; cursor: not-allowed; }
     .input-field { width: 100%; padding: 0.5rem; border-radius: 0.25rem; border: none; margin-bottom: 0.75rem; color: #374151; font-weight: 600;}
+    .input-disabled { background-color: #e5e7eb; color: #9ca3af; cursor: not-allowed; }
     .hidden-view { display: none !important; }
     .status-inactive { color: #dc2626; font-weight: bold; }
     .status-active { color: #16a34a; font-weight: bold; }
     .play-grid-input { padding: 0.35rem; font-size: 0.875rem; text-align: center; border-radius: 0.25rem; border: none; font-weight: bold; color: #374151;}
     .win-table-cell { padding: 0.75rem 0.25rem; text-align: center; font-size: 0.95rem; font-weight: 600; color: #374151; }
     .win-table-header { padding: 0.5rem 0.25rem; text-align: center; font-size: 0.85rem; font-weight: bold; color: #1f2937; }
-    /* Styling Tabel Saldo History */
     .saldo-table-cell { padding: 0.75rem 0.15rem; text-align: center; font-size: 0.85rem; font-weight: 600; color: #374151; }
     .saldo-table-header { padding: 0.5rem 0.15rem; text-align: center; font-size: 0.75rem; font-weight: bold; color: #1f2937; }
   </style>
@@ -165,13 +165,12 @@
       </div>
     </div>
 
-    <!-- VIEW 8: WIN RESULTS (HALAMAN WIN) -->
+    <!-- VIEW 8: WIN RESULTS -->
     <div id="view-win-results" class="hidden-view relative">
       <div id="win-loading-indicator" class="text-center font-bold text-[#0284c7] my-8 hidden">
          Loading data...
       </div>
       
-      <!-- Tabel Hasil - Ditambahkan overflow-x-auto & min-w -->
       <div id="win-table-container" class="bg-white/30 rounded-lg p-2 mb-4 hidden overflow-x-auto">
         <table class="w-full min-w-[400px] whitespace-nowrap">
            <thead>
@@ -181,13 +180,10 @@
                  <th class="win-table-header w-3/12">RESULT</th>
               </tr>
            </thead>
-           <tbody id="win-table-body" class="divide-y divide-gray-400/20">
-              <!-- JS will populate -->
-           </tbody>
+           <tbody id="win-table-body" class="divide-y divide-gray-400/20"></tbody>
         </table>
       </div>
 
-      <!-- Tombol Pagination -->
       <div class="flex justify-between items-center mb-6 px-1">
          <button id="btn-prev-page" onclick="loadWinPage(currentWinPage - 1)" class="bg-[#0ea5e9] hover:bg-[#0284c7] text-white px-5 py-2 rounded-full font-bold shadow text-sm transition opacity-50 cursor-not-allowed">PREVIOUS</button>
          <button id="btn-next-page" onclick="loadWinPage(currentWinPage + 1)" class="bg-[#0ea5e9] hover:bg-[#0284c7] text-white px-5 py-2 rounded-full font-bold shadow text-sm transition">NEXT</button>
@@ -195,7 +191,6 @@
       
       <div class="text-center text-sm text-gray-800 font-semibold mb-8 dash-time-display"></div>
 
-      <!-- Navigasi Bawah -->
       <div class="flex justify-between items-center px-4 mt-4">
         <img src="LOGO_HOME.png" alt="Home" onclick="switchView('view-dashboard')" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
         <img src="LOGO_WIN.png" alt="Win" onclick="handleWinResultsButton()" class="w-16 h-16 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
@@ -211,7 +206,6 @@
          Loading data...
       </div>
       
-      <!-- PERBAIKAN: Ditambahkan overflow-x-auto pada container dan min-width pada tabel -->
       <div id="saldo-table-container" class="bg-white/30 rounded-lg p-2 mb-4 hidden overflow-x-auto">
         <table class="w-full min-w-[500px] whitespace-nowrap">
            <thead>
@@ -223,9 +217,7 @@
                  <th class="saldo-table-header w-3/12">PRIZE</th>
               </tr>
            </thead>
-           <tbody id="saldo-table-body" class="divide-y divide-gray-400/20">
-              <!-- JS will populate -->
-           </tbody>
+           <tbody id="saldo-table-body" class="divide-y divide-gray-400/20"></tbody>
         </table>
       </div>
 
@@ -236,22 +228,20 @@
       
       <div class="text-center text-sm text-gray-800 font-semibold mb-8 dash-time-display"></div>
 
-      <!-- Navigasi Bawah Khusus Saldo -->
       <div class="flex justify-between items-center mt-4">
         <img src="LOGO_HOME.png" alt="Home" onclick="switchView('view-dashboard')" class="w-20 h-20 cursor-pointer transition transform hover:scale-110 drop-shadow-md">
-        <button onclick="alert('DEPOSIT/WITHDRAWAL sedang dalam pengembangan')" class="bg-[#0ea5e9] hover:bg-[#0284c7] text-white py-4 px-6 rounded-full font-black text-lg shadow-lg flex-1 ml-4 transition">
+        <button onclick="openActivityModal()" class="bg-[#0ea5e9] hover:bg-[#0284c7] text-white py-4 px-6 rounded-full font-black text-lg shadow-lg flex-1 ml-4 transition">
             DEPOSIT/WITHDRAWAL
         </button>
       </div>
     </div>
 
-    <!-- Footer Credit -->
     <div class="text-center text-xs text-gray-700 mt-10 w-full">
       This application was created by Mr. Punjul under the company STANDAT
     </div>
   </div>
 
-  <!-- MODAL: CONFIRMATION -->
+  <!-- MODAL: CONFIRMATION (BET) -->
   <div id="modal-confirm" class="hidden fixed inset-0 bg-gray-600/90 z-50 flex items-center justify-center p-4">
       <div class="bg-gray-300 w-full max-w-sm rounded p-6 text-center text-gray-800 font-semibold shadow-2xl">
           <h2 class="text-lg mb-4">Your Bet</h2>
@@ -281,21 +271,53 @@
       </div>
   </div>
 
+  <!-- MODAL: DEPOSIT / WITHDRAWAL -->
+  <div id="modal-activity" class="hidden fixed inset-0 bg-gray-600/90 z-50 flex items-center justify-center p-4">
+      <div class="bg-[#93c5fd] w-full max-w-sm rounded-lg p-6 text-gray-800 font-semibold shadow-2xl relative">
+          
+          <!-- Radio Type -->
+          <div class="flex justify-around mb-6 text-lg">
+             <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="radio" name="activity_type" value="Deposit" class="w-5 h-5" checked>
+                <span>Deposit</span>
+             </label>
+             <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="radio" name="activity_type" value="Withdrawal" class="w-5 h-5">
+                <span>Withdrawal</span>
+             </label>
+          </div>
+
+          <form id="form-activity" class="space-y-3">
+             <select id="act-method" class="input-field mb-1" onchange="toggleBankFields()" required>
+                <option value="" disabled selected>Method</option>
+                <option value="CASH">CASH</option>
+                <option value="BANK TRANSFER">BANK TRANSFER</option>
+             </select>
+
+             <input type="number" id="act-amount" class="input-field mb-1 text-right" placeholder="Amount $0.00" onchange="validateActAmount(this)" step="0.25" min="10.00" required>
+             
+             <!-- Bank Fields -->
+             <input type="text" id="act-bank-name" class="input-field mb-1 input-disabled" placeholder="Bank Name" disabled required>
+             <input type="text" id="act-bank-account" class="input-field mb-1 input-disabled" placeholder="Bank Account Number" disabled required>
+             <input type="text" id="act-bank-account-name" class="input-field mb-6 input-disabled" placeholder="Your name in Bank Account" disabled required>
+             
+             <div class="flex justify-between space-x-4 mt-6">
+                <button type="button" onclick="closeActivityModal()" class="bg-white text-gray-800 px-6 py-2 rounded-full font-bold shadow w-1/2 transition hover:bg-gray-100">CANCEL</button>
+                <button type="submit" id="btn-submit-activity" class="bg-white text-gray-800 px-6 py-2 rounded-full font-bold shadow w-1/2 transition hover:bg-gray-100">REQUEST</button>
+             </div>
+          </form>
+      </div>
+  </div>
+
   <script>
     // PASTIKAN API_URL INI SAMA DENGAN DEPLOYMENT TERBARU ANDA
     const API_URL = "https://script.google.com/macros/s/AKfycbx17A57khXP7ubD4xBlXoZ-EN1Wi2hUX5pVBxWu7tY25CQ6z_BXXLpgXOLk3hHM-UAnWw/exec";
     
-    let currentGlobalData = {
-       id_player: "", status: "", balance: 0.00, period_name: "", geo_location: ""
-    };
-    let pendingBets = [];
-    let pendingTotal = 0;
+    let currentGlobalData = { id_player: "", status: "", balance: 0.00, period_name: "", geo_location: "" };
+    let pendingBets = []; let pendingTotal = 0;
     
-    let currentWinPage = 1;
-    let totalWinPages = 1;
-    
-    let currentSaldoPage = 1;
-    let totalSaldoPages = 1;
+    let currentWinPage = 1; let totalWinPages = 1;
+    let currentSaldoPage = 1; let totalSaldoPages = 1;
 
     function initBetGrid() {
       const container = document.getElementById('bet-container');
@@ -316,9 +338,7 @@
       const now = new Date();
       const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
       const dateStr = now.toLocaleDateString('en-GB', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
-      document.querySelectorAll('.dash-time-display').forEach(el => {
-         el.innerHTML = `<span class="text-lg">${timeStr}</span><br>${dateStr}`;
-      });
+      document.querySelectorAll('.dash-time-display').forEach(el => { el.innerHTML = `<span class="text-lg">${timeStr}</span><br>${dateStr}`; });
     }, 1000);
 
     function switchView(viewId) {
@@ -336,28 +356,22 @@
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           pos => { currentGlobalData.geo_location = `${pos.coords.latitude},${pos.coords.longitude}`; },
-          err => { console.warn("Geolocation denied/failed"); currentGlobalData.geo_location = "0,0"; }
+          err => { currentGlobalData.geo_location = "0,0"; }
         );
       }
     }
     
     // --- HALAMAN PLAY! WIN ---
     async function handlePlayButton() {
-      if (currentGlobalData.status === 'Inactive') {
-        alert("Please Top up your account to Play");
-      } else if (currentGlobalData.status === 'Active') {
+      if (currentGlobalData.status === 'Inactive') return alert("Please Top up your account to Play");
+      if (currentGlobalData.status === 'Active') {
         const btn = document.getElementById('btn-play-dashboard');
         btn.innerText = "Loading...";
-        
         fetchGeoLocation();
 
         try {
-          const formData = new URLSearchParams();
-          formData.append('action', 'get_period');
-          
-          const res = await fetch(API_URL, { 
-              method: 'POST', body: formData, redirect: 'follow' 
-          });
+          const formData = new URLSearchParams(); formData.append('action', 'get_period');
+          const res = await fetch(API_URL, { method: 'POST', body: formData, redirect: 'follow' });
           const data = await res.json();
           
           document.getElementById('play-id').innerText = currentGlobalData.id_player;
@@ -369,17 +383,13 @@
              document.getElementById('play-period-date').innerText = data.period.date;
              currentGlobalData.period_name = data.period.name;
              
-             btnBet.disabled = false;
-             btnBet.classList.remove('btn-disabled');
-             btnBet.classList.add('btn-blue');
+             btnBet.disabled = false; btnBet.classList.remove('btn-disabled'); btnBet.classList.add('btn-blue');
           } else {
              document.getElementById('play-period-name').innerText = "";
              document.getElementById('play-period-date').innerText = "";
              currentGlobalData.period_name = "";
              
-             btnBet.disabled = true;
-             btnBet.classList.add('btn-disabled');
-             btnBet.classList.remove('btn-blue');
+             btnBet.disabled = true; btnBet.classList.add('btn-disabled'); btnBet.classList.remove('btn-blue');
           }
           
           for(let i=1; i<=10; i++) {
@@ -390,165 +400,102 @@
           document.getElementById('play-total-amount').innerText = "$0.00";
           switchView('view-play');
 
-        } catch (err) {
-          alert("Gagal memuat data Periode.");
-        } finally {
-          btn.innerHTML = "Play!<br>WIN";
-        }
+        } catch (err) { alert("Gagal memuat data Periode."); } 
+        finally { btn.innerHTML = "Play!<br>WIN"; }
       }
     }
 
     // --- HALAMAN WIN (RESULT) ---
     function handleWinResultsButton() {
-       switchView('view-win-results');
-       currentWinPage = 1;
-       loadWinPage(currentWinPage);
+       switchView('view-win-results'); currentWinPage = 1; loadWinPage(currentWinPage);
     }
 
     async function loadWinPage(page) {
        if(page < 1) return;
-       
        document.getElementById('win-table-container').classList.add('hidden');
        document.getElementById('win-loading-indicator').classList.remove('hidden');
        
-       const btnPrev = document.getElementById('btn-prev-page');
-       const btnNext = document.getElementById('btn-next-page');
+       const btnPrev = document.getElementById('btn-prev-page'); const btnNext = document.getElementById('btn-next-page');
        btnPrev.disabled = true; btnNext.disabled = true;
 
        try {
-          const formData = new URLSearchParams();
-          formData.append('action', 'get_win_results');
-          formData.append('page', page);
-
+          const formData = new URLSearchParams(); formData.append('action', 'get_win_results'); formData.append('page', page);
           const res = await fetch(API_URL, { method: 'POST', body: formData, redirect: 'follow' });
           const json = await res.json();
 
           if (json.status === 'success') {
-             currentWinPage = json.currentPage;
-             totalWinPages = json.totalPages;
-
-             const tbody = document.getElementById('win-table-body');
-             tbody.innerHTML = '';
+             currentWinPage = json.currentPage; totalWinPages = json.totalPages;
+             const tbody = document.getElementById('win-table-body'); tbody.innerHTML = '';
              
              if (json.data && json.data.length > 0) {
                  json.data.forEach(item => {
-                    tbody.innerHTML += `
-                       <tr>
-                          <td class="win-table-cell">${item.period_name}</td>
-                          <td class="win-table-cell">${item.period_date}</td>
-                          <td class="win-table-cell">${item.result}</td>
-                       </tr>
-                    `;
+                    tbody.innerHTML += `<tr><td class="win-table-cell">${item.period_name}</td><td class="win-table-cell">${item.period_date}</td><td class="win-table-cell">${item.result}</td></tr>`;
                  });
-             } else {
-                 tbody.innerHTML = `<tr><td colspan="3" class="text-center py-6 italic text-gray-600">No results found</td></tr>`;
-             }
+             } else tbody.innerHTML = `<tr><td colspan="3" class="text-center py-6 italic text-gray-600">No results found</td></tr>`;
              
              document.getElementById('win-loading-indicator').classList.add('hidden');
              document.getElementById('win-table-container').classList.remove('hidden');
 
-             if(currentWinPage <= 1) {
-                btnPrev.disabled = true; btnPrev.classList.add('opacity-50', 'cursor-not-allowed');
-             } else {
-                btnPrev.disabled = false; btnPrev.classList.remove('opacity-50', 'cursor-not-allowed');
-             }
+             if(currentWinPage <= 1) { btnPrev.disabled = true; btnPrev.classList.add('opacity-50', 'cursor-not-allowed'); } 
+             else { btnPrev.disabled = false; btnPrev.classList.remove('opacity-50', 'cursor-not-allowed'); }
              
-             if(currentWinPage >= totalWinPages || totalWinPages === 0) {
-                btnNext.disabled = true; btnNext.classList.add('opacity-50', 'cursor-not-allowed');
-             } else {
-                btnNext.disabled = false; btnNext.classList.remove('opacity-50', 'cursor-not-allowed');
-             }
+             if(currentWinPage >= totalWinPages || totalWinPages === 0) { btnNext.disabled = true; btnNext.classList.add('opacity-50', 'cursor-not-allowed'); } 
+             else { btnNext.disabled = false; btnNext.classList.remove('opacity-50', 'cursor-not-allowed'); }
           } else {
-             alert("Error loading results: " + json.message);
-             document.getElementById('win-loading-indicator').classList.add('hidden');
+             alert("Error loading results: " + json.message); document.getElementById('win-loading-indicator').classList.add('hidden');
           }
-       } catch(err) {
-          alert("Failed to fetch WIN results.");
-          document.getElementById('win-loading-indicator').classList.add('hidden');
-       }
+       } catch(err) { alert("Failed to fetch WIN results."); document.getElementById('win-loading-indicator').classList.add('hidden'); }
     }
 
     // --- HALAMAN SALDO (HISTORY) ---
     function handleSaldoButton() {
        if(!currentGlobalData.id_player) return alert("Please Login First");
        document.getElementById('saldo-player-id').innerText = currentGlobalData.id_player;
-       switchView('view-saldo');
-       currentSaldoPage = 1;
-       loadSaldoPage(currentSaldoPage);
+       switchView('view-saldo'); currentSaldoPage = 1; loadSaldoPage(currentSaldoPage);
     }
     
     async function loadSaldoPage(page) {
        if(page < 1) return;
-       
        document.getElementById('saldo-table-container').classList.add('hidden');
        document.getElementById('saldo-loading-indicator').classList.remove('hidden');
        
-       const btnPrev = document.getElementById('btn-prev-saldo');
-       const btnNext = document.getElementById('btn-next-saldo');
+       const btnPrev = document.getElementById('btn-prev-saldo'); const btnNext = document.getElementById('btn-next-saldo');
        btnPrev.disabled = true; btnNext.disabled = true;
 
        try {
           const formData = new URLSearchParams();
-          formData.append('action', 'get_saldo_history');
-          formData.append('page', page);
-          formData.append('id_player', currentGlobalData.id_player);
+          formData.append('action', 'get_saldo_history'); formData.append('page', page); formData.append('id_player', currentGlobalData.id_player);
 
           const res = await fetch(API_URL, { method: 'POST', body: formData, redirect: 'follow' });
           const json = await res.json();
 
           if (json.status === 'success') {
-             currentSaldoPage = json.currentPage;
-             totalSaldoPages = json.totalPages;
-
-             const tbody = document.getElementById('saldo-table-body');
-             tbody.innerHTML = '';
+             currentSaldoPage = json.currentPage; totalSaldoPages = json.totalPages;
+             const tbody = document.getElementById('saldo-table-body'); tbody.innerHTML = '';
              
              if (json.data && json.data.length > 0) {
                  json.data.forEach(item => {
-                    tbody.innerHTML += `
-                       <tr>
-                          <td class="saldo-table-cell">${item.date}</td>
-                          <td class="saldo-table-cell">${item.bet}</td>
-                          <td class="saldo-table-cell">${item.amount}</td>
-                          <td class="saldo-table-cell">${item.status}</td>
-                          <td class="saldo-table-cell">${item.prize}</td>
-                       </tr>
-                    `;
+                    tbody.innerHTML += `<tr><td class="saldo-table-cell">${item.date}</td><td class="saldo-table-cell">${item.bet}</td><td class="saldo-table-cell">${item.amount}</td><td class="saldo-table-cell">${item.status}</td><td class="saldo-table-cell">${item.prize}</td></tr>`;
                  });
-             } else {
-                 tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 italic text-gray-600">No transaction history</td></tr>`;
-             }
+             } else tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 italic text-gray-600">No transaction history</td></tr>`;
              
              document.getElementById('saldo-loading-indicator').classList.add('hidden');
              document.getElementById('saldo-table-container').classList.remove('hidden');
 
-             if(currentSaldoPage <= 1) {
-                btnPrev.disabled = true; btnPrev.classList.add('opacity-50', 'cursor-not-allowed');
-             } else {
-                btnPrev.disabled = false; btnPrev.classList.remove('opacity-50', 'cursor-not-allowed');
-             }
+             if(currentSaldoPage <= 1) { btnPrev.disabled = true; btnPrev.classList.add('opacity-50', 'cursor-not-allowed'); } 
+             else { btnPrev.disabled = false; btnPrev.classList.remove('opacity-50', 'cursor-not-allowed'); }
              
-             if(currentSaldoPage >= totalSaldoPages || totalSaldoPages === 0) {
-                btnNext.disabled = true; btnNext.classList.add('opacity-50', 'cursor-not-allowed');
-             } else {
-                btnNext.disabled = false; btnNext.classList.remove('opacity-50', 'cursor-not-allowed');
-             }
+             if(currentSaldoPage >= totalSaldoPages || totalSaldoPages === 0) { btnNext.disabled = true; btnNext.classList.add('opacity-50', 'cursor-not-allowed'); } 
+             else { btnNext.disabled = false; btnNext.classList.remove('opacity-50', 'cursor-not-allowed'); }
           } else {
-             alert("Error loading history: " + json.message);
-             document.getElementById('saldo-loading-indicator').classList.add('hidden');
+             alert("Error loading history: " + json.message); document.getElementById('saldo-loading-indicator').classList.add('hidden');
           }
-       } catch(err) {
-          alert("Failed to fetch SALDO history.");
-          document.getElementById('saldo-loading-indicator').classList.add('hidden');
-       }
+       } catch(err) { alert("Failed to fetch SALDO history."); document.getElementById('saldo-loading-indicator').classList.add('hidden'); }
     }
 
     // --- LOGIKA VALIDASI & TRANSAKSI BET ---
     function validateNumber(input, index) {
-      let val = input.value.replace(/\D/g, ''); 
-      if (val.length > 4) val = val.substring(0, 4);
-      input.value = val;
-      
+      let val = input.value.replace(/\D/g, ''); if (val.length > 4) val = val.substring(0, 4); input.value = val;
       const typeInput = document.getElementById(`bet-type-${index}`);
       if (val.length === 2) typeInput.value = '2D';
       else if (val.length === 3) typeInput.value = '3D';
@@ -558,13 +505,9 @@
 
     function validateAmount(input) {
       let val = parseFloat(input.value);
-      if (isNaN(val) || val <= 0) {
-          input.value = '';
-      } else if (val % 0.25 !== 0) {
-          input.value = '';
-      } else {
-          input.value = val.toFixed(2);
-      }
+      if (isNaN(val) || val <= 0) input.value = '';
+      else if (val % 0.25 !== 0) input.value = '';
+      else input.value = val.toFixed(2);
       calculateTotal();
     }
 
@@ -580,64 +523,36 @@
 
     function showConfirmation() {
       for(let i = 1; i <= 10; i++) {
-         const num = document.getElementById(`bet-num-${i}`).value.trim();
-         const amtStr = document.getElementById(`bet-amount-${i}`).value.trim();
-         
-         if ((num && !amtStr) || (!num && amtStr)) {
-             return alert(`Incomplete entry in row ${i}. Both Number and Amount must be filled together.`);
-         }
+         const num = document.getElementById(`bet-num-${i}`).value.trim(); const amtStr = document.getElementById(`bet-amount-${i}`).value.trim();
+         if ((num && !amtStr) || (!num && amtStr)) return alert(`Incomplete entry in row ${i}. Both Number and Amount must be filled together.`);
       }
 
       const total = calculateTotal();
       if (total === 0) return alert("Please enter your bets.");
-      
-      if (total > currentGlobalData.balance) {
-         return alert("Sorry, your balance is insufficient for this transaction. Please deposit to continue the transaction.");
-      }
+      if (total > currentGlobalData.balance) return alert("Sorry, your balance is insufficient for this transaction. Please deposit to continue the transaction.");
 
-      pendingBets = [];
-      let listHtml = '';
+      pendingBets = []; let listHtml = '';
       for(let i=1; i<=10; i++) {
-         const num = document.getElementById(`bet-num-${i}`).value;
-         const type = document.getElementById(`bet-type-${i}`).value;
-         const amtStr = document.getElementById(`bet-amount-${i}`).value;
+         const num = document.getElementById(`bet-num-${i}`).value; const type = document.getElementById(`bet-type-${i}`).value; const amtStr = document.getElementById(`bet-amount-${i}`).value;
          
          if (num && type && amtStr) {
-             const amt = parseFloat(amtStr);
-             let prize = 0;
-             if(type === '2D') prize = amt * 60;
-             if(type === '3D') prize = amt * 300;
-             if(type === '4D') prize = amt * 2500;
-             
+             const amt = parseFloat(amtStr); let prize = 0;
+             if(type === '2D') prize = amt * 60; if(type === '3D') prize = amt * 300; if(type === '4D') prize = amt * 2500;
              pendingBets.push({number: num, type: type, amount: amt, prize: prize});
              listHtml += `<div class="flex justify-between"><span>${num}</span> <span>${type}</span> <span>$${amt.toFixed(2)}</span></div>`;
          }
       }
-      
-      pendingTotal = total;
-      document.getElementById('confirm-list').innerHTML = listHtml;
-      document.getElementById('confirm-total').innerText = "$" + total.toFixed(2);
-      document.getElementById('modal-confirm').classList.remove('hidden');
+      pendingTotal = total; document.getElementById('confirm-list').innerHTML = listHtml;
+      document.getElementById('confirm-total').innerText = "$" + total.toFixed(2); document.getElementById('modal-confirm').classList.remove('hidden');
     }
 
     function closeConfirm() { document.getElementById('modal-confirm').classList.add('hidden'); }
 
     async function processBet() {
-      const btnOk = document.getElementById('btn-process-bet');
-      btnOk.innerText = "Processing...";
-      btnOk.disabled = true;
-
-      const payloadObj = {
-         id_player: currentGlobalData.id_player,
-         period_name: currentGlobalData.period_name,
-         total_bet: pendingTotal,
-         geo_location: currentGlobalData.geo_location || "0,0",
-         bets: pendingBets
-      };
-
-      const formData = new URLSearchParams();
-      formData.append('action', 'submit_bet');
-      formData.append('payload', JSON.stringify(payloadObj));
+      const btnOk = document.getElementById('btn-process-bet'); btnOk.innerText = "Processing..."; btnOk.disabled = true;
+      const payloadObj = { id_player: currentGlobalData.id_player, period_name: currentGlobalData.period_name, total_bet: pendingTotal, geo_location: currentGlobalData.geo_location || "0,0", bets: pendingBets };
+      
+      const formData = new URLSearchParams(); formData.append('action', 'submit_bet'); formData.append('payload', JSON.stringify(payloadObj));
 
       try {
         const res = await fetch(API_URL, { method: 'POST', body: formData, redirect: 'follow' });
@@ -649,39 +564,104 @@
            document.getElementById('play-balance').innerText = "$" + currentGlobalData.balance.toFixed(2);
 
            document.getElementById('modal-confirm').classList.add('hidden');
-           document.getElementById('inv-coupon').innerText = data.id_coupon;
-           document.getElementById('inv-period').innerText = currentGlobalData.period_name;
-           document.getElementById('inv-datetime').innerText = data.date_time;
-           document.getElementById('inv-player').innerText = currentGlobalData.id_player;
+           document.getElementById('inv-coupon').innerText = data.id_coupon; document.getElementById('inv-period').innerText = currentGlobalData.period_name;
+           document.getElementById('inv-datetime').innerText = data.date_time; document.getElementById('inv-player').innerText = currentGlobalData.id_player;
            
            let invHtml = '';
-           pendingBets.forEach(b => {
-             invHtml += `<div class="flex justify-between border-b border-gray-400/30 pb-1"><span>${b.number}</span> <span>${b.type}</span> <span>$${b.amount.toFixed(2)}</span></div>`;
-           });
+           pendingBets.forEach(b => { invHtml += `<div class="flex justify-between border-b border-gray-400/30 pb-1"><span>${b.number}</span> <span>${b.type}</span> <span>$${b.amount.toFixed(2)}</span></div>`; });
            
-           document.getElementById('inv-list').innerHTML = invHtml;
-           document.getElementById('inv-total').innerText = "$" + pendingTotal.toFixed(2);
+           document.getElementById('inv-list').innerHTML = invHtml; document.getElementById('inv-total').innerText = "$" + pendingTotal.toFixed(2);
            document.getElementById('modal-invoice').classList.remove('hidden');
-        } else {
-           alert("Transaction Failed: " + data.message);
-        }
-      } catch (err) {
-        alert("Server connection failed.");
-      } finally {
-        btnOk.innerText = "OK";
-        btnOk.disabled = false;
-      }
+        } else alert("Transaction Failed: " + data.message);
+      } catch (err) { alert("Server connection failed."); } 
+      finally { btnOk.innerText = "OK"; btnOk.disabled = false; }
     }
 
     function closeInvoice() {
        document.getElementById('modal-invoice').classList.add('hidden');
        for(let i=1; i<=10; i++) {
-          document.getElementById(`bet-num-${i}`).value = '';
-          document.getElementById(`bet-type-${i}`).value = '';
-          document.getElementById(`bet-amount-${i}`).value = '';
+          document.getElementById(`bet-num-${i}`).value = ''; document.getElementById(`bet-type-${i}`).value = ''; document.getElementById(`bet-amount-${i}`).value = '';
        }
        document.getElementById('play-total-amount').innerText = "$0.00";
     }
+
+    // --- MODAL DEPOSIT / WITHDRAWAL ---
+    function openActivityModal() {
+       document.getElementById('form-activity').reset();
+       toggleBankFields(); // reset disable/enable state
+       document.getElementById('modal-activity').classList.remove('hidden');
+    }
+    
+    function closeActivityModal() {
+       document.getElementById('modal-activity').classList.add('hidden');
+    }
+
+    function toggleBankFields() {
+       const method = document.getElementById('act-method').value;
+       const bankName = document.getElementById('act-bank-name');
+       const bankAcc = document.getElementById('act-bank-account');
+       const bankNameInAcc = document.getElementById('act-bank-account-name');
+
+       if (method === 'CASH') {
+          bankName.disabled = true; bankAcc.disabled = true; bankNameInAcc.disabled = true;
+          bankName.value = ''; bankAcc.value = ''; bankNameInAcc.value = '';
+          bankName.classList.add('input-disabled'); bankAcc.classList.add('input-disabled'); bankNameInAcc.classList.add('input-disabled');
+          bankName.required = false; bankAcc.required = false; bankNameInAcc.required = false;
+       } else { // BANK TRANSFER
+          bankName.disabled = false; bankAcc.disabled = false; bankNameInAcc.disabled = false;
+          bankName.classList.remove('input-disabled'); bankAcc.classList.remove('input-disabled'); bankNameInAcc.classList.remove('input-disabled');
+          bankName.required = true; bankAcc.required = true; bankNameInAcc.required = true;
+       }
+    }
+
+    function validateActAmount(input) {
+       let val = parseFloat(input.value);
+       if (isNaN(val) || val < 10.00) {
+           input.value = ''; // Reset jika dibawah minimum
+           alert("Minimum amount is $10.00");
+       } else {
+           input.value = val.toFixed(2);
+       }
+    }
+
+    document.getElementById('form-activity').addEventListener('submit', async (e) => {
+       e.preventDefault();
+       const btn = document.getElementById('btn-submit-activity');
+       btn.innerText = "Processing..."; btn.disabled = true;
+
+       const actType = document.querySelector('input[name="activity_type"]:checked').value;
+       
+       const formData = new URLSearchParams();
+       formData.append('action', 'submit_activity');
+       formData.append('id_player', currentGlobalData.id_player);
+       formData.append('activity', actType);
+       formData.append('method', document.getElementById('act-method').value);
+       formData.append('amount', document.getElementById('act-amount').value);
+       
+       // Tambahkan data bank hanya jika metode adalah BANK TRANSFER
+       if (document.getElementById('act-method').value === 'BANK TRANSFER') {
+          formData.append('bank_name', document.getElementById('act-bank-name').value);
+          formData.append('bank_account_no', document.getElementById('act-bank-account').value);
+          formData.append('bank_account_name', document.getElementById('act-bank-account-name').value);
+       }
+
+       try {
+          const res = await fetch(API_URL, { method: 'POST', body: formData, redirect: 'follow' });
+          const json = await res.json();
+
+          if (json.status === 'success') {
+             alert(actType + " request submitted successfully! Waiting for admin approval.");
+             closeActivityModal();
+          } else {
+             alert("Error submitting request: " + json.message);
+          }
+       } catch (err) {
+          alert("Server connection failed.");
+       } finally {
+          btn.innerText = "REQUEST"; btn.disabled = false;
+       }
+    });
+
 
     // --- FORM REGISTER & LOGIN ---
     document.getElementById('form-register').addEventListener('submit', async (e) => {
