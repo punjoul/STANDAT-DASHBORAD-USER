@@ -22,6 +22,43 @@
     .win-table-header { padding: 0.5rem 0.25rem; text-align: center; font-size: 0.85rem; font-weight: bold; color: #1f2937; }
     .saldo-table-cell { padding: 0.75rem 0.15rem; text-align: center; font-size: 0.85rem; font-weight: 600; color: #374151; }
     .saldo-table-header { padding: 0.5rem 0.15rem; text-align: center; font-size: 0.75rem; font-weight: bold; color: #1f2937; }
+    
+    /* PENGATURAN CETAK (PRINT) UNTUK PRINTER THERMAL 58mm */
+    @media print {
+      body * { visibility: hidden; } /* Sembunyikan semua di layar */
+      #print-area, #print-area * { visibility: visible; } /* Tampilkan area cetak */
+      
+      #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 58mm; /* Ukuran kertas thermal 58mm */
+        padding: 0;
+        margin: 0;
+        background-color: white;
+        color: black;
+      }
+
+      /* Sesuaikan teks agar proporsional di ukuran kecil */
+      #print-area {
+          font-family: monospace, sans-serif;
+          font-size: 11px;
+          line-height: 1.4;
+      }
+      #print-area .text-3xl { font-size: 16px; font-weight: bold; text-align: center;}
+      #print-area .text-xs, #print-area .text-sm { font-size: 11px; }
+      #print-area .font-bold { font-weight: bold; }
+      
+      /* Hapus warna background dan shadow pada print */
+      #print-area .bg-white\/40, #print-area .bg-\[\#93c5fd\] { background-color: transparent !important; }
+      #print-area .shadow-2xl { box-shadow: none !important; }
+      
+      /* Tampilkan logo khusus print */
+      #print-logo { display: block !important; margin: 0 auto 10px auto; width: 40px; }
+      
+      /* Sembunyikan elemen tombol dari cetakan */
+      .no-print { display: none !important; }
+    }
   </style>
 </head>
 <body class="flex items-center justify-center min-h-screen relative">
@@ -236,7 +273,7 @@
       </div>
     </div>
 
-    <div class="text-center text-xs text-gray-700 mt-10 w-full">
+    <div class="text-center text-xs text-gray-700 mt-10 w-full no-print">
       This application was created by Mr. Punjul under the company STANDAT
     </div>
   </div>
@@ -255,9 +292,14 @@
       </div>
   </div>
 
-  <!-- MODAL: INVOICE -->
+  <!-- MODAL: INVOICE (DIPERBARUI UNTUK MENDUKUNG PRINT THERMAL) -->
   <div id="modal-invoice" class="hidden fixed inset-0 bg-gray-600/90 z-50 flex items-center justify-center p-4">
-      <div class="bg-[#93c5fd] w-full max-w-sm rounded p-6 text-center text-gray-800 font-semibold shadow-2xl relative">
+      <!-- Container utama yang akan di-print diberi ID print-area -->
+      <div id="print-area" class="bg-[#93c5fd] w-full max-w-sm rounded p-6 text-center text-gray-800 font-semibold shadow-2xl relative">
+          
+          <!-- Logo Thermal Print (Hanya muncul saat print) -->
+          <img id="print-logo" src="logo.png" alt="Logo" class="hidden mx-auto mb-2 object-contain" />
+          
           <div class="text-3xl font-black text-[#0284c7] mb-4 italic leading-tight">//STANDAT.<br>L O T T E R Y</div>
           <div class="text-xs text-left mb-4 bg-white/40 p-3 rounded space-y-1">
               <div>Coupon ID: <span id="inv-coupon"></span></div>
@@ -267,7 +309,12 @@
           </div>
           <div id="inv-list" class="space-y-1 text-sm mb-4 text-left px-2 max-h-40 overflow-y-auto"></div>
           <div class="font-bold text-lg mb-6 flex justify-between px-4"><span>TOTAL</span> <span id="inv-total"></span></div>
-          <button onclick="closeInvoice()" class="bg-white px-10 py-2 rounded-full shadow text-[#0284c7] font-bold text-lg transition hover:bg-gray-100">OK</button>
+          
+          <!-- Tombol Cetak dan OK (Akan disembunyikan saat dicetak berkat .no-print) -->
+          <div class="flex justify-between space-x-2 no-print">
+              <button onclick="window.print()" class="bg-yellow-400 text-gray-900 px-6 py-2 rounded-full shadow font-bold text-lg transition hover:bg-yellow-300">PRINT</button>
+              <button onclick="closeInvoice()" class="bg-white text-[#0284c7] px-10 py-2 rounded-full shadow font-bold text-lg transition hover:bg-gray-100">OK</button>
+          </div>
       </div>
   </div>
 
@@ -588,7 +635,7 @@
     // --- MODAL DEPOSIT / WITHDRAWAL ---
     function openActivityModal() {
        document.getElementById('form-activity').reset();
-       toggleBankFields(); // reset disable/enable state
+       toggleBankFields(); 
        document.getElementById('modal-activity').classList.remove('hidden');
     }
     
@@ -607,7 +654,7 @@
           bankName.value = ''; bankAcc.value = ''; bankNameInAcc.value = '';
           bankName.classList.add('input-disabled'); bankAcc.classList.add('input-disabled'); bankNameInAcc.classList.add('input-disabled');
           bankName.required = false; bankAcc.required = false; bankNameInAcc.required = false;
-       } else { // BANK TRANSFER
+       } else { 
           bankName.disabled = false; bankAcc.disabled = false; bankNameInAcc.disabled = false;
           bankName.classList.remove('input-disabled'); bankAcc.classList.remove('input-disabled'); bankNameInAcc.classList.remove('input-disabled');
           bankName.required = true; bankAcc.required = true; bankNameInAcc.required = true;
@@ -617,7 +664,7 @@
     function validateActAmount(input) {
        let val = parseFloat(input.value);
        if (isNaN(val) || val < 10.00) {
-           input.value = ''; // Reset jika dibawah minimum
+           input.value = ''; 
            alert("Minimum amount is $10.00");
        } else {
            input.value = val.toFixed(2);
@@ -638,7 +685,6 @@
        formData.append('method', document.getElementById('act-method').value);
        formData.append('amount', document.getElementById('act-amount').value);
        
-       // Tambahkan data bank hanya jika metode adalah BANK TRANSFER
        if (document.getElementById('act-method').value === 'BANK TRANSFER') {
           formData.append('bank_name', document.getElementById('act-bank-name').value);
           formData.append('bank_account_no', document.getElementById('act-bank-account').value);
@@ -661,7 +707,6 @@
           btn.innerText = "REQUEST"; btn.disabled = false;
        }
     });
-
 
     // --- FORM REGISTER & LOGIN ---
     document.getElementById('form-register').addEventListener('submit', async (e) => {
