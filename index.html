@@ -37,26 +37,23 @@
         margin: 0;
         background-color: white;
         color: black;
+        font-family: monospace, sans-serif;
+        font-size: 12px;
+        line-height: 1.4;
       }
 
       /* Sesuaikan teks agar proporsional di ukuran kecil */
-      #print-area {
-          font-family: monospace, sans-serif;
-          font-size: 11px;
-          line-height: 1.4;
-      }
-      #print-area .text-3xl { font-size: 16px; font-weight: bold; text-align: center;}
-      #print-area .text-xs, #print-area .text-sm { font-size: 11px; }
+      #print-area .text-xs, #print-area .text-sm { font-size: 12px; }
       #print-area .font-bold { font-weight: bold; }
       
       /* Hapus warna background dan shadow pada print */
       #print-area .bg-white\/40, #print-area .bg-\[\#93c5fd\] { background-color: transparent !important; }
       #print-area .shadow-2xl { box-shadow: none !important; }
       
-      /* Tampilkan logo khusus print */
-      #print-logo { display: block !important; margin: 0 auto 10px auto; width: 40px; }
+      /* Tampilkan logo khusus print dengan ukuran lebih besar */
+      #print-logo { display: block !important; margin: 0 auto 10px auto; width: 120px; height: auto; }
       
-      /* Sembunyikan elemen tombol dari cetakan */
+      /* Sembunyikan elemen tombol dan header dari cetakan */
       .no-print { display: none !important; }
     }
   </style>
@@ -300,7 +297,8 @@
           <!-- Logo Thermal Print (Hanya muncul saat print) -->
           <img id="print-logo" src="logo.png" alt="Logo" class="hidden mx-auto mb-2 object-contain" />
           
-          <div class="text-3xl font-black text-[#0284c7] mb-4 italic leading-tight">//STANDAT.<br>L O T T E R Y</div>
+          <!-- Header Modal (Tampil sebagai SORTEZA di layar, disembunyikan saat print) -->
+          <div class="text-3xl font-black text-[#0284c7] mb-4 italic leading-tight no-print">SORTEZA<br>L O T T E R Y</div>
           <div class="text-xs text-left mb-4 bg-white/40 p-3 rounded space-y-1">
               <div>Coupon ID: <span id="inv-coupon"></span></div>
               <div>Period: <span id="inv-period"></span></div>
