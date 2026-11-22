@@ -56,9 +56,13 @@
       /* Tampilkan logo khusus print */
       #print-logo { display: block !important; margin: 0 auto 10px auto; width: 120px; }
       
-      /* Sembunyikan elemen tombol dari cetakan */
-      .no-print { display: none !important; }
-    }
+      /* Sembunyikan elemen tombol dan header dari cetakan */
+      #print-area .no-print,
+      #print-area .no-print *,
+      .no-print { 
+        display: none !important; 
+        visibility: hidden !important;
+      }
   </style>
 </head>
 <body class="flex items-center justify-center min-h-screen relative">
