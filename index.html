@@ -56,13 +56,14 @@
       /* Tampilkan logo khusus print */
       #print-logo { display: block !important; margin: 0 auto 10px auto; width: 120px; }
       
-      /* Sembunyikan elemen tombol dan header dari cetakan */
+      /* Sembunyikan elemen tombol dari cetakan */
       #print-area .no-print,
       #print-area .no-print *,
       .no-print { 
         display: none !important; 
         visibility: hidden !important;
       }
+    }
   </style>
 </head>
 <body class="flex items-center justify-center min-h-screen relative">
@@ -713,25 +714,83 @@
        }
     });
 
+    // Helper: Konversi File ke Base64
+    function readFileAsBase64(file) {
+      return new Promise((resolve, reject) => {
+        if (!file) return resolve(null);
+        const reader = new FileReader();
+        reader.onload = () => {
+          const base64String = reader.result.split(',')[1];
+          resolve({
+            data: base64String,
+            name: file.name,
+            type: file.type || 'application/octet-stream'
+          });
+        };
+        reader.onerror = (err) => reject(err);
+        reader.readAsDataURL(file);
+      });
+    }
+
     // --- FORM REGISTER & LOGIN ---
     document.getElementById('form-register').addEventListener('submit', async (e) => {
       e.preventDefault();
       const pass = document.getElementById('reg-pass').value;
-      if(pass !== document.getElementById('reg-pass-repeat').value) return alert("Password tidak cocok!");
+      if (pass !== document.getElementById('reg-pass-repeat').value) {
+        return alert("Password tidak cocok!");
+      }
 
-      const btn = e.target.querySelector('button'); btn.innerText = "Loading...";
-      const formData = new URLSearchParams(new FormData(e.target));
-      formData.append('action', 'register');
-      formData.append('username', document.getElementById('reg-user').value);
-      formData.append('password', pass);
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.innerText = "Uploading...";
+      btn.disabled = true;
 
       try {
+        const file1 = document.getElementById('reg-attach1').files[0];
+        const file2 = document.getElementById('reg-attach2').files[0];
+
+        const [attach1, attach2] = await Promise.all([
+          readFileAsBase64(file1),
+          readFileAsBase64(file2)
+        ]);
+
+        const formData = new URLSearchParams();
+        formData.append('action', 'register');
+        formData.append('name', document.getElementById('reg-name').value);
+        formData.append('pob', document.getElementById('reg-pob').value);
+        formData.append('dob', document.getElementById('reg-dob').value);
+        formData.append('id_card', document.getElementById('reg-idcard').value);
+        formData.append('address', document.getElementById('reg-address').value);
+        formData.append('city', document.getElementById('reg-city').value);
+        formData.append('phone', document.getElementById('reg-phone').value);
+        formData.append('username', document.getElementById('reg-user').value);
+        formData.append('password', pass);
+
+        if (attach1) {
+          formData.append('attach1_data', attach1.data);
+          formData.append('attach1_name', attach1.name);
+          formData.append('attach1_type', attach1.type);
+        }
+        if (attach2) {
+          formData.append('attach2_data', attach2.data);
+          formData.append('attach2_name', attach2.name);
+          formData.append('attach2_type', attach2.type);
+        }
+
         const res = await fetch(API_URL, { method: 'POST', body: formData, redirect: 'follow' });
         const data = await res.json();
-        if (data.status === 'success') switchView('view-thankyou');
-        else alert("Gagal: " + data.message);
-      } catch (err) { alert("CORS Error."); } 
-      finally { btn.innerText = "REGISTER"; e.target.reset(); }
+
+        if (data.status === 'success') {
+          e.target.reset();
+          switchView('view-thankyou');
+        } else {
+          alert("Gagal: " + data.message);
+        }
+      } catch (err) {
+        alert("Gagal mengunggah file atau koneksi server bermasalah.");
+      } finally {
+        btn.innerText = "REGISTER";
+        btn.disabled = false;
+      }
     });
 
     document.getElementById('form-login').addEventListener('submit', async (e) => {
