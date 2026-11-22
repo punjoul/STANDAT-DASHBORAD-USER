@@ -23,17 +23,17 @@
     .saldo-table-cell { padding: 0.75rem 0.15rem; text-align: center; font-size: 0.85rem; font-weight: 600; color: #f3f4f6; }
     .saldo-table-header { padding: 0.5rem 0.15rem; text-align: center; font-size: 0.75rem; font-weight: bold; color: #ffffff; }
     
-/* PENGATURAN CETAK (PRINT) UNTUK PRINTER THERMAL 58mm */
+/* PENGATURAN CETAK UNTUK INNERPRINTER DENGAN KERTAS VIRTUAL ISO A4 */
     @page {
-      size: 58mm auto; /* Mengunci ukuran kertas langsung ke 58mm */
-      margin: 0mm;     /* Menghilangkan margin bawaan browser */
+      size: A4 portrait;
+      margin: 0mm;
     }
 
     @media print {
       body * { visibility: hidden; }
       #print-area, #print-area * { 
         visibility: visible; 
-        color: #000000 !important; /* Paksa semua teks hitam pekat, bukan abu-abu */
+        color: #000000 !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
       }
@@ -42,30 +42,62 @@
         position: absolute;
         left: 0;
         top: 0;
-        width: 48mm; /* Lebar efektif area cetak thermal 58mm agar tidak di-downscale */
-        padding: 2mm 1mm;
+        width: 100%;        /* Memenuhi lebar penuh halaman virtual A4 */
+        max-width: 100%;
+        padding: 4mm 6mm;
         margin: 0;
         background-color: #ffffff !important;
         font-family: Tahoma, sans-serif;
-        font-size: 14px;
-        font-weight: 600; /* Sedikit lebih tebal agar jarum thermal mencetak solid */
-        line-height: 1.35;
+        font-size: 36px;    /* Diperbesar agar tetap terbaca jelas saat disusutkan ke 58mm */
+        font-weight: 700;
+        line-height: 1.4;
       }
 
-      #print-area .text-xs, #print-area .text-sm { 
-        font-size: 11px; 
-        font-weight: 600;
+      /* Menyesuaikan ukuran teks detail, daftar taruhan, dan total */
+      #print-area .text-xs, 
+      #print-area .text-sm { 
+        font-size: 34px; 
+        font-weight: 700;
       }
 
-      #print-area .text-lg, #print-area .font-bold { 
-        font-size: 13px;
-        font-weight: 800; 
+      #print-area .text-lg, 
+      #print-area .font-bold { 
+        font-size: 40px;
+        font-weight: 900; 
       }
 
-      /* Ubah garis tipis transparan menjadi garis putus-putus hitam pekat */
+      /* Garis pembatas tegas */
       #print-area .border-b {
-        border-bottom: 1px dashed #000000 !important;
+        border-bottom: 3px dashed #000000 !important;
+        padding-bottom: 8px;
+        margin-bottom: 8px;
       }
+
+      /* Hapus batas tinggi scroll agar semua baris taruhan tercetak utuh */
+      #print-area #inv-list {
+        max-height: none !important;
+        overflow: visible !important;
+      }
+      
+      /* Hapus warna background dan shadow pada print */
+      #print-area .bg-white\/40, #print-area .bg-\[\#93c5fd\] { 
+        background-color: transparent !important; 
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+      #print-area .shadow-2xl { box-shadow: none !important; }
+      
+      /* Logo diperbesar proporsional dengan lebar A4 */
+      #print-logo { 
+        display: block !important; 
+        margin: 0 auto 16px auto; 
+        width: 260px; 
+        height: auto;
+        filter: grayscale(100%) contrast(200%);
+      }
+      
+      .no-print { display: none !important; }
+    }
   </style>
 </head>
 <body class="flex items-center justify-center min-h-screen relative">
