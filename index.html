@@ -23,49 +23,42 @@
     .saldo-table-cell { padding: 0.75rem 0.15rem; text-align: center; font-size: 0.85rem; font-weight: 600; color: #f3f4f6; }
     .saldo-table-header { padding: 0.5rem 0.15rem; text-align: center; font-size: 0.75rem; font-weight: bold; color: #ffffff; }
     
-/* PENGATURAN CETAK (PRINT) UNTUK PRINTER THERMAL 58mm */
-    @page {
-      size: 58mm auto; /* Mengunci ukuran kertas langsung ke 58mm */
-      margin: 0mm;     /* Menghilangkan margin bawaan browser */
-    }
-
+    /* PENGATURAN CETAK (PRINT) UNTUK PRINTER THERMAL 58mm */
     @media print {
-      body * { visibility: hidden; }
-      #print-area, #print-area * { 
-        visibility: visible; 
-        color: #000000 !important; /* Paksa semua teks hitam pekat, bukan abu-abu */
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-      }
+      body * { visibility: hidden; } /* Sembunyikan semua di layar */
+      #print-area, #print-area * { visibility: visible; } /* Tampilkan area cetak */
       
       #print-area {
         position: absolute;
         left: 0;
         top: 0;
-        width: 48mm; /* Lebar efektif area cetak thermal 58mm agar tidak di-downscale */
-        padding: 2mm 1mm;
+        width: 58mm; /* Ukuran kertas thermal 58mm */
+        padding: 0;
         margin: 0;
-        background-color: #ffffff !important;
-        font-family: Tahoma, sans-serif;
-        font-size: 18px;
-        font-weight: 600; /* Sedikit lebih tebal agar jarum thermal mencetak solid */
-        line-height: 2.00;
+        background-color: white;
+        color: black;
       }
 
-      #print-area .text-xs, #print-area .text-sm { 
-        font-size: 11px; 
-        font-weight: 600;
+      /* Sesuaikan teks agar proporsional di ukuran kecil */
+      #print-area {
+          font-family: Tahoma, sans-serif;
+          font-size: 14px;
+          line-height: 1.4;
       }
-
-      #print-area .text-lg, #print-area .font-bold { 
-        font-size: 13px;
-        font-weight: 800; 
-      }
-
-      /* Ubah garis tipis transparan menjadi garis putus-putus hitam pekat */
-      #print-area .border-b {
-        border-bottom: 1px dashed #000000 !important;
-      }
+      #print-area .text-3xl { font-size: 16px; font-weight: bold; text-align: center;}
+      #print-area .text-xs, #print-area .text-sm { font-size: 11px; }
+      #print-area .font-bold { font-weight: bold; }
+      
+      /* Hapus warna background dan shadow pada print */
+      #print-area .bg-white\/40, #print-area .bg-\[\#93c5fd\] { background-color: transparent !important; }
+      #print-area .shadow-2xl { box-shadow: none !important; }
+      
+      /* Tampilkan logo khusus print */
+      #print-logo { display: block !important; margin: 0 auto 10px auto; width: 120px; }
+      
+      /* Sembunyikan elemen tombol dari cetakan */
+      .no-print { display: none !important; }
+    }
   </style>
 </head>
 <body class="flex items-center justify-center min-h-screen relative">
